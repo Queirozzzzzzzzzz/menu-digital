@@ -10,7 +10,7 @@ exports.up = (pgm) => {
     },
 
     name: {
-      type: "varchar(255)",
+      type: "varchar(128)",
       notNull: true,
       unique: true,
     },
@@ -24,6 +24,7 @@ exports.up = (pgm) => {
     status: {
       type: "varchar(10)",
       notNull: true,
+      default: "available",
       check: "status IN ('available', 'missing', 'disabled')",
     },
 

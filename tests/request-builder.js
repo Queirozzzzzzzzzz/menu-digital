@@ -106,12 +106,33 @@ export default class RequestBuilder {
     return { res, resBody };
   }
 
+  async buildAdmin() {
+    let adminObj = await orchestrator.createAdmin();
+
+    await this.setUser(adminObj);
+
+    return adminObj;
+  }
+
+  async setUser(userObj) {
+    this.sessionObj = await orchestrator.createSession(userObj);
+
+    if (!this.headers) {
+      this.buildHeaders();
+    }
+
+    if (this.headers) {
+      this.headers.cookie = `session_id=${this.sessionObj.token}`;
+    }
+  }
+
   buildHeaders(customHeaders) {
     const headers = {
       "Content-Type": "application/json",
     };
 
     this.headers = { ...headers, ...customHeaders };
+
     return this.headers;
   }
 

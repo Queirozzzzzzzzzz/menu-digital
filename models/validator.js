@@ -1,7 +1,6 @@
 import Joi from "joi";
 
 import { ValidationError } from "errors";
-import webserver from "infra/webserver";
 
 const MAX_INTEGER = 2147483647;
 const MIN_INTEGER = -2147483648;
@@ -25,6 +24,8 @@ const defaultSchema = Joi.object()
     "number.max": "{#label} deve possuir um valor máximo de {#limit}.",
     "number.min": "{#label} deve possuir um valor mínimo de {#limit}.",
     "number.unsafe": `{#label} deve possuir um valor entre ${MIN_INTEGER} e ${MAX_INTEGER}.`,
+    "number.precision":
+      "{#label} deve ter precisão de {#limit} dígitos após a vírgula.",
     "object.base": "{#label} enviado deve ser do tipo Object.",
     "object.min": "Objeto enviado deve ter no mínimo uma chave.",
     "string.alphanum": "{#label} deve conter apenas caracteres alfanuméricos.",
@@ -42,6 +43,8 @@ const defaultSchema = Joi.object()
     "tag.reserved": "Esta tag de usuário não está disponível para uso.",
     "username.reserved": "Este nome de usuário não está disponível para uso.",
     "string.pattern.base": "{#label} está no formato errado.",
+    "string.uri": "{#label} deve ser uma URI válida.",
+    "array.base": "{#label} deve ser um array com base válida.",
   });
 
 export default function validator(obj, keys) {
@@ -97,4 +100,110 @@ export default function validator(obj, keys) {
   return value;
 }
 
-const schemas = {};
+const schemas = {
+  username: function () {
+    return Joi.object({
+      username: Joi.string()
+        .pattern(/^[a-zA-Z0-9\u00C0-\u017F ]+$/)
+        .min(1)
+        .max(30)
+        .trim()
+        .when("$required.username", {
+          is: "required",
+          then: Joi.required(),
+          otherwise: Joi.optional(),
+        }),
+    });
+  },
+
+  password: function () {
+    return Joi.object({
+      password: Joi.string().min(8).max(72).trim().when("$required.password", {
+        is: "required",
+        then: Joi.required(),
+        otherwise: Joi.optional(),
+      }),
+    });
+  },
+
+  session_id: function () {
+    return Joi.object({
+      session_id: Joi.string()
+        .length(96)
+        .alphanum()
+        .when("$required.session_id", {
+          is: "required",
+          then: Joi.required(),
+          otherwise: Joi.optional(),
+        }),
+    });
+  },
+
+  product_name: function () {
+    return Joi.object({
+      product_name: Joi.string()
+        .pattern(
+          /^(\s|\p{C}|\u2800|\u034f|\u115f|\u1160|\u17b4|\u17b5|\u3164|\uffa0).*$/su,
+          { invert: true },
+        )
+        .replace(
+          /(\s|\p{C}|\u2800|\u034f|\u115f|\u1160|\u17b4|\u17b5|\u3164|\uffa0)+$|\u0000/gsu,
+          "",
+        )
+        .min(1)
+        .max(128)
+        .when("$required.product_name", {
+          is: "required",
+          then: Joi.required(),
+          otherwise: Joi.optional(),
+        })
+        .messages({
+          "string.pattern.invert.base": `{#label} deve começar com caracteres visíveis.`,
+        }),
+    });
+  },
+
+  product_category: function () {
+    return Joi.object({
+      product_category: Joi.string()
+        .trim()
+        .valid("coffee", "sweets", "snacks", "teas")
+        .when("$required.product_category", {
+          is: "required",
+          then: Joi.required(),
+          otherwise: Joi.optional(),
+        }),
+    });
+  },
+
+  price: function () {
+    return Joi.object({
+      price: Joi.number().precision(10, 2).min(0).max(99999999.99),
+    });
+  },
+
+  picture: function () {
+    return Joi.object({
+      picture: Joi.string()
+        .uri({ scheme: ["http", "https"] })
+        .when("$required.picture", {
+          is: "required",
+          then: Joi.required(),
+          otherwise: Joi.optional(),
+        }),
+    });
+  },
+
+  ingredients_ids: function () {
+    return Joi.object({
+      ingredients_ids: Joi.array()
+        .items(Joi.number().integer().positive())
+        .min(0)
+        .when("$required.ingredients_ids", {
+          is: "required",
+          then: Joi.required(),
+          otherwise: Joi.optional(),
+        }),
+    });
+  },
+};

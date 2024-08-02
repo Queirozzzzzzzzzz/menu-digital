@@ -3,23 +3,19 @@ import { useEffect } from "react";
 
 import { useUser } from "pages/interface";
 
-export default function Home() {
+export default function Orders() {
   const router = useRouter();
   const { user, isLoading } = useUser();
 
   useEffect(() => {
     if (router && !user && !isLoading) {
-      router.push(`/menu`);
-    }
-
-    if (router && user && !isLoading) {
-      router.push(`/admin/orders`);
+      router.push(`/login`);
     }
   }, [user, router, isLoading]);
 
   return (
     <>
-      <h1>Redirecionando...</h1>
+      <h1>Pedidos</h1>
     </>
   );
 }

@@ -1,8 +1,11 @@
 import retry from "async-retry";
+import setCookieParser from "set-cookie-parser";
 
 import db from "infra/database";
 import migrator from "infra/migrator.js";
 import webserver from "infra/webserver";
+import user from "models/user";
+import session from "models/session";
 
 if (process.env.NODE_ENV !== "test") {
   throw new Error({
@@ -82,12 +85,44 @@ async function runTransaction(queryFunction, ...args) {
   }
 }
 
+async function createAdmin() {
+  const userObj = await user.create({
+    username: "admin",
+    password: "12345678",
+    features: ["admin"],
+  });
+  await addFeaturesToUser(userObj, ["admin"]);
+
+  const newUserObj = await user.findByUsername("admin");
+
+  return newUserObj;
+}
+
+async function createSession(sessionObj) {
+  return await session.create(sessionObj.id);
+}
+
+async function addFeaturesToUser(userObj, features) {
+  return await user.addFeatures(userObj.id, features);
+}
+
+function parseSetCookies(res) {
+  const setCookieHeaderValues = res.headers.get("set-cookie");
+  const parsedCookies = setCookieParser.parse(setCookieHeaderValues, {
+    map: true,
+  });
+  return parsedCookies;
+}
+
 const orchestrator = {
   webserverUrl,
   waitForAllServices,
   dropAllTables,
   runPendingMigrations,
   runTransaction,
+  createAdmin,
+  createSession,
+  parseSetCookies,
 };
 
 export default orchestrator;
