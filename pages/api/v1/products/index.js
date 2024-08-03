@@ -5,6 +5,8 @@ import validator from "models/validator";
 import product from "models/product";
 import authorization from "models/authorization";
 import authentication from "models/authentication";
+import db from "infra/database";
+import { ValidationError } from "errors";
 
 export default nextConnect({
   attachParams: true,
@@ -35,7 +37,35 @@ async function postValidationHandler(req, res, next) {
 }
 
 async function postHandler(req, res) {
-  const newProduct = await product.create(req.body);
+  let newProduct;
+
+  const transaction = await db.transaction();
+
+  try {
+    transaction.query("BEGIN");
+
+    newProduct = await product.create(req.body, { transaction });
+
+    transaction.query("COMMIT");
+  } catch (err) {
+    await transaction.query("ROLLBACK");
+
+    if (err.databaseErrorCode === db.errorCodes.UNIQUE_CONSTRAINT_VIOLATION) {
+      throw new ValidationError({
+        message: `O conteúdo enviado parece ser duplicado.`,
+        action: `Utilize um "title" ou "slug" com começo diferente.`,
+        stack: new Error().stack,
+        errorLocationCode:
+          "MODEL:CONTENT:CHECK_FOR_CONTENT_UNIQUENESS:ALREADY_EXISTS",
+        statusCode: 400,
+        key: "slug",
+      });
+    }
+
+    throw err;
+  } finally {
+    transaction.release();
+  }
 
   return res.status(201).json(newProduct);
 }
