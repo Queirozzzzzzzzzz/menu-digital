@@ -1,11 +1,13 @@
 import retry from "async-retry";
 import setCookieParser from "set-cookie-parser";
+import { faker } from "@faker-js/faker";
 
 import db from "infra/database";
 import migrator from "infra/migrator.js";
 import webserver from "infra/webserver";
 import user from "models/user";
 import session from "models/session";
+import product from "models/product";
 
 if (process.env.NODE_ENV !== "test") {
   throw new Error({
@@ -106,6 +108,43 @@ async function addFeaturesToUser(userObj, features) {
   return await user.addFeatures(userObj.id, features);
 }
 
+async function createProduct(values = {}) {
+  const info = {
+    ingredients_ids: values.ingredients_ids || [],
+    product_name: values.product_name || getFakeName(),
+    product_category: values.product_category || "coffee",
+    price: values.price || "22.90",
+    picture: values.picture || "https://image_url_path.jpg",
+  };
+
+  let productObj = await product.create(info);
+
+  if (values.status)
+    productObj = await setProductStatus(productObj.name, values.status);
+
+  return productObj;
+}
+
+async function setProductStatus(productName, status) {
+  return await product.setStatus(productName, status);
+}
+
+const usedFakeNames = new Set();
+function getFakeName() {
+  let name;
+  while (!name) {
+    name = faker.internet.userName().replace(/[_.-]/g, "").substring(0, 29);
+
+    if (usedFakeNames.has(name)) {
+      name = undefined;
+    } else {
+      usedFakeNames.add(name);
+    }
+  }
+
+  return name;
+}
+
 function parseSetCookies(res) {
   const setCookieHeaderValues = res.headers.get("set-cookie");
   const parsedCookies = setCookieParser.parse(setCookieHeaderValues, {
@@ -123,6 +162,9 @@ const orchestrator = {
   createAdmin,
   createSession,
   parseSetCookies,
+  addFeaturesToUser,
+  createProduct,
+  setProductStatus,
 };
 
 export default orchestrator;

@@ -206,4 +206,19 @@ const schemas = {
         }),
     });
   },
+
+  product_status: function () {
+    return Joi.object({
+      product_status: Joi.array().items(
+        Joi.string()
+          .valid("available", "missing", "disabled")
+          .min(0)
+          .when("$required.product_status", {
+            is: "required",
+            then: Joi.required(),
+            otherwise: Joi.optional(),
+          }),
+      ),
+    });
+  },
 };

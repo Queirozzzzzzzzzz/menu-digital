@@ -20,7 +20,8 @@ export default nextConnect({
     postValidationHandler,
     authorization.canRequest("admin"),
     postHandler,
-  );
+  )
+  .get(getValidationHandler, getHandler);
 
 async function postValidationHandler(req, res, next) {
   const cleanValues = validator(req.body, {
@@ -68,4 +69,23 @@ async function postHandler(req, res) {
   }
 
   return res.status(201).json(newProduct);
+}
+
+async function getValidationHandler(req, res, next) {
+  if (req.query.product_status)
+    req.query.product_status = req.query.product_status.split(",");
+
+  const cleanValues = validator(req.query, {
+    product_status: "required",
+  });
+
+  req.body = cleanValues;
+
+  next();
+}
+
+async function getHandler(req, res) {
+  const products = await product.listByStatus(req.query.product_status);
+
+  return res.status(200).json(products);
 }
