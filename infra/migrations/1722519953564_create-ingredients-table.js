@@ -12,11 +12,23 @@ exports.up = (pgm) => {
     },
 
     value: {
-      type: "varchar(255)",
+      type: "integer",
     },
 
     price: {
       type: "decimal(10, 2)",
+    },
+
+    created_at: {
+      type: "timestamp with time zone",
+      notNull: true,
+      default: pgm.func("(now() at time zone 'utc')"),
+    },
+
+    updated_at: {
+      type: "timestamp with time zone",
+      notNull: true,
+      default: pgm.func("(now() at time zone 'utc')"),
     },
   });
 };

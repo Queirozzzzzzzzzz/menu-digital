@@ -8,6 +8,7 @@ import webserver from "infra/webserver";
 import user from "models/user";
 import session from "models/session";
 import product from "models/product";
+import ingredient from "models/ingredient";
 
 if (process.env.NODE_ENV !== "test") {
   throw new Error({
@@ -129,6 +130,18 @@ async function setProductStatus(productName, status) {
   return await product.setStatus(productName, status);
 }
 
+async function createIngredient(values = {}) {
+  const info = {
+    name: values.name || getFakeName(),
+    value: values.value || null,
+    price: values.price || null,
+  };
+
+  return await ingredient.create(info);
+}
+
+// Functions
+
 const usedFakeNames = new Set();
 function getFakeName() {
   let name;
@@ -165,6 +178,7 @@ const orchestrator = {
   addFeaturesToUser,
   createProduct,
   setProductStatus,
+  createIngredient,
 };
 
 export default orchestrator;

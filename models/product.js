@@ -23,8 +23,8 @@ async function create(values, options = {}) {
 }
 
 async function edit(id, values, options = {}) {
-  const oldContent = await findById(id);
-  values = { ...oldContent, ...values };
+  const oldProduct = await findById(id);
+  values = { ...oldProduct, ...values };
 
   const query = {
     text: `
