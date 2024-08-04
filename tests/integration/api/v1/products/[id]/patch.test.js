@@ -16,8 +16,11 @@ describe("PATCH to /api/v1/products", () => {
       const testProduct = await orchestrator.createProduct();
       const reqB = new RequestBuilder(`/api/v1/products/${testProduct.id}`);
 
+      const ingredient1 = await orchestrator.createIngredient();
+      const ingredient2 = await orchestrator.createIngredient();
+
       const values = {
-        ingredients_ids: [1, 2],
+        ingredients_ids: [ingredient1.id, ingredient2.id],
         name: "Product name",
         category: "coffees",
         price: "22.90",
@@ -95,9 +98,11 @@ describe("PATCH to /api/v1/products", () => {
       const testProduct = await orchestrator.createProduct();
       const reqB = new RequestBuilder(`/api/v1/products/${testProduct.id}`);
       await reqB.buildAdmin();
+      const ingredient1 = await orchestrator.createIngredient();
+      const ingredient2 = await orchestrator.createIngredient();
 
       const values = {
-        ingredients_ids: [1, 2],
+        ingredients_ids: [ingredient1.id, ingredient2.id],
         name: "Product name",
         category: "coffees",
         price: "22.90",

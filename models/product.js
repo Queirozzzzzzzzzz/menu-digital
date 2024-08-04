@@ -55,17 +55,26 @@ async function edit(id, values, options = {}) {
 }
 
 async function listByStatus(status = [], options = {}) {
-  const statusPlaceholder = status.length
-    ? `${status.map((_, i) => `$${i + 1}`).join(", ")}`
-    : "NULL";
-
   const query = {
     text: `
-    SELECT *
-    FROM products
-    WHERE status IN (${statusPlaceholder});
+    SELECT 
+    p.*, 
+    COALESCE(
+      json_agg(
+        json_build_object(
+          'name', i.name,
+          'value', i.value,
+          'price', i.price
+        )
+      ) FILTER (WHERE i.id IS NOT NULL),
+      '[]'::json
+    ) AS ingredients
+    FROM products p
+    LEFT JOIN ingredients i ON i.id = ANY(p.ingredients_ids)
+    WHERE p.status = ANY($1)
+    GROUP BY p.id;
     `,
-    values: [...status],
+    values: [status],
   };
 
   const res = await db.query(query, options);
@@ -92,9 +101,22 @@ async function setStatus(name, status, options = {}) {
 async function findById(id, options = {}) {
   const query = {
     text: `
-    SELECT *
-    FROM products
-    WHERE id = $1;
+    SELECT 
+      p.*, 
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'name', i.name,
+            'value', i.value,
+            'price', i.price
+          )
+        ) FILTER (WHERE i.id IS NOT NULL),
+        '[]'::json
+      ) AS ingredients
+    FROM products p
+    LEFT JOIN ingredients i ON i.id = ANY(p.ingredients_ids)
+    WHERE p.id = $1
+    GROUP BY p.id;
     `,
     values: [id],
   };

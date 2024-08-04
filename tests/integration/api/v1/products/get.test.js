@@ -16,10 +16,17 @@ describe("GET to /api/v1/products", () => {
       const reqB = new RequestBuilder(
         `/api/v1/products?product_status=available`,
       );
+      const ingredient1 = await orchestrator.createIngredient();
+      const ingredient2 = await orchestrator.createIngredient();
 
       const statuses = ["available", "missing", "disabled"];
       await Promise.all(
-        statuses.map((status) => orchestrator.createProduct({ status })),
+        statuses.map((status) =>
+          orchestrator.createProduct({
+            status,
+            ingredients_ids: [ingredient1.id, ingredient2.id],
+          }),
+        ),
       );
 
       const productsInDb = await db.query("SELECT * FROM products;");
@@ -27,6 +34,7 @@ describe("GET to /api/v1/products", () => {
 
       const { res, resBody } = await reqB.get();
 
+      console.log(resBody);
       expect(res.status).toBe(200);
       expect(resBody.length).toBe(1);
     });

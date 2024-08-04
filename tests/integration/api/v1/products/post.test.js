@@ -13,9 +13,11 @@ describe("POST to /api/v1/products", () => {
   describe("No user", () => {
     test("With unique name and full valid data", async () => {
       const reqB = new RequestBuilder("/api/v1/products");
+      const ingredient1 = await orchestrator.createIngredient();
+      const ingredient2 = await orchestrator.createIngredient();
 
       const values = {
-        ingredients_ids: [1, 2],
+        ingredients_ids: [ingredient1.id, ingredient2.id],
         name: "Product name",
         category: "coffees",
         price: "22.90",
@@ -46,9 +48,11 @@ describe("POST to /api/v1/products", () => {
     test("With unique name and full valid data", async () => {
       const reqB = new RequestBuilder("/api/v1/products");
       await reqB.buildAdmin();
+      const ingredient1 = await orchestrator.createIngredient();
+      const ingredient2 = await orchestrator.createIngredient();
 
       const values = {
-        ingredients_ids: [1, 2],
+        ingredients_ids: [ingredient1.id, ingredient2.id],
         name: "Product name",
         category: "coffees",
         price: "22.90",
@@ -89,9 +93,11 @@ describe("POST to /api/v1/products", () => {
     test("With non-unique name and full valid data", async () => {
       const reqB = new RequestBuilder("/api/v1/products");
       await reqB.buildAdmin();
+      const ingredient1 = await orchestrator.createIngredient();
+      const ingredient2 = await orchestrator.createIngredient();
 
       const values = {
-        ingredients_ids: [1, 2],
+        ingredients_ids: [ingredient1.id, ingredient2.id],
         name: "Product name",
         category: "coffees",
         price: "22.90",
@@ -125,9 +131,11 @@ describe("POST to /api/v1/products", () => {
     test("With unique name but without picture", async () => {
       const reqB = new RequestBuilder("/api/v1/products");
       await reqB.buildAdmin();
+      const ingredient1 = await orchestrator.createIngredient();
+      const ingredient2 = await orchestrator.createIngredient();
 
       const values = {
-        ingredients_ids: [1, 2],
+        ingredients_ids: [ingredient1.id, ingredient2.id],
         name: "Product name",
         category: "coffees",
         price: "22.90",
@@ -151,9 +159,11 @@ describe("POST to /api/v1/products", () => {
     test("With unique name but invalid category", async () => {
       const reqB = new RequestBuilder("/api/v1/products");
       await reqB.buildAdmin();
+      const ingredient1 = await orchestrator.createIngredient();
+      const ingredient2 = await orchestrator.createIngredient();
 
       const values = {
-        ingredients_ids: [1, 2],
+        ingredients_ids: [ingredient1.id, ingredient2.id],
         name: "Product name",
         category: "invalid",
         price: "22.90",
