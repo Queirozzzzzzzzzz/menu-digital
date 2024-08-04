@@ -2,6 +2,7 @@ import { version as uuidVersion } from "uuid";
 
 import orchestrator from "tests/orchestrator.js";
 import RequestBuilder from "tests/request-builder";
+import db from "infra/database";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -9,13 +10,21 @@ beforeAll(async () => {
   await orchestrator.runPendingMigrations();
 });
 
-describe("GET to /api/v1/ingredients/[id]", () => {
+describe("PATCH to /api/v1/ingredients", () => {
   describe("No user", () => {
-    test("Retrieving information", async () => {
-      const testProduct = await orchestrator.createIngredient();
-      const reqB = new RequestBuilder(`/api/v1/ingredients/${testProduct.id}`);
+    test("With unique name and full valid data", async () => {
+      const testingredient = await orchestrator.createIngredient();
+      const reqB = new RequestBuilder(
+        `/api/v1/ingredients/${testingredient.id}`,
+      );
 
-      const { res, resBody } = await reqB.get();
+      const values = {
+        name: "Chocolate",
+        value: 16,
+        price: "1.56",
+      };
+
+      const { res, resBody } = await reqB.patch(values);
 
       expect(res.status).toBe(403);
       expect(resBody.name).toEqual("ForbiddenError");
@@ -27,8 +36,6 @@ describe("GET to /api/v1/ingredients/[id]", () => {
       expect(resBody.error_location_code).toEqual(
         "MODEL:AUTHORIZATION:CAN_REQUEST:USER_NOT_FOUND",
       );
-      expect(uuidVersion(resBody.error_id)).toBe(4);
-      expect(uuidVersion(resBody.request_id)).toBe(4);
     });
   });
 
@@ -38,43 +45,169 @@ describe("GET to /api/v1/ingredients/[id]", () => {
       await orchestrator.runPendingMigrations();
     });
 
-    test("With valid id", async () => {
-      const testIngredient = await orchestrator.createIngredient();
+    test("With no values", async () => {
+      const testingredient = await orchestrator.createIngredient();
       const reqB = new RequestBuilder(
-        `/api/v1/ingredients/${testIngredient.id}`,
+        `/api/v1/ingredients/${testingredient.id}`,
       );
       await reqB.buildAdmin();
 
-      const { res, resBody } = await reqB.get();
+      const { res, resBody } = await reqB.patch();
 
-      expect(res.status).toBe(200);
-      expect(resBody.id).toEqual(testIngredient.id);
-      expect(resBody.name).toEqual(testIngredient.name);
-      expect(resBody.value).toEqual(testIngredient.value);
-      expect(resBody.status).toEqual(testIngredient.status);
-      expect(resBody.price).toEqual(testIngredient.price);
-      expect(Date.parse(resBody.created_at)).not.toEqual(NaN);
-      expect(Date.parse(resBody.updated_at)).not.toEqual(NaN);
-    });
-
-    test("With invalid id", async () => {
-      const reqB = new RequestBuilder(`/api/v1/ingredients/2`);
-      await reqB.buildAdmin();
-
-      const { res, resBody } = await reqB.get();
-
-      expect(res.status).toBe(404);
+      expect(res.status).toBe(400);
       expect(resBody).toEqual({
-        name: "NotFoundError",
-        message: "O ingrediente não foi encontrado no sistema.",
-        action:
-          'Verifique se o "id" do ingrediente está digitado corretamente.',
-        status_code: 404,
+        name: "ValidationError",
+        message: "Objeto enviado deve ter no mínimo uma chave.",
+        action: "Ajuste os dados enviados e tente novamente.",
+        status_code: 400,
         error_id: resBody.error_id,
         request_id: resBody.request_id,
+        error_location_code: "MODEL:VALIDATOR:FINAL_SCHEMA",
+        key: "object",
+        type: "object.min",
       });
-      expect(uuidVersion(resBody.error_id)).toBe(4);
-      expect(uuidVersion(resBody.request_id)).toBe(4);
+      expect(uuidVersion(resBody.error_id)).toEqual(4);
+      expect(uuidVersion(resBody.request_id)).toEqual(4);
+    });
+
+    test("With empty values", async () => {
+      const testingredient = await orchestrator.createIngredient();
+      const reqB = new RequestBuilder(
+        `/api/v1/ingredients/${testingredient.id}`,
+      );
+      await reqB.buildAdmin();
+
+      const { res, resBody } = await reqB.patch({});
+
+      expect(res.status).toBe(400);
+      expect(resBody).toEqual({
+        name: "ValidationError",
+        message: "Objeto enviado deve ter no mínimo uma chave.",
+        action: "Ajuste os dados enviados e tente novamente.",
+        status_code: 400,
+        error_id: resBody.error_id,
+        request_id: resBody.request_id,
+        error_location_code: "MODEL:VALIDATOR:FINAL_SCHEMA",
+        key: "object",
+        type: "object.min",
+      });
+      expect(uuidVersion(resBody.error_id)).toEqual(4);
+      expect(uuidVersion(resBody.request_id)).toEqual(4);
+    });
+
+    test("With unique name and full valid data", async () => {
+      const testingredient = await orchestrator.createIngredient();
+      const reqB = new RequestBuilder(
+        `/api/v1/ingredients/${testingredient.id}`,
+      );
+      await reqB.buildAdmin();
+
+      const values = {
+        name: "Chocolate",
+        value: 32,
+        price: "156",
+      };
+
+      const { res, resBody } = await reqB.patch(values);
+
+      expect(res.status).toBe(200);
+      expect(resBody.name).toEqual("Chocolate");
+      expect(resBody.value).toEqual(32);
+      expect(resBody.price).toEqual("156.00");
+    });
+
+    test("With non-unique name and full valid data", async () => {
+      const testingredient = await orchestrator.createIngredient();
+      const testingredient2 = await orchestrator.createIngredient();
+      const reqB = new RequestBuilder(
+        `/api/v1/ingredients/${testingredient.id}`,
+      );
+      await reqB.buildAdmin();
+
+      const values = {
+        name: testingredient2.name,
+        value: 32,
+        price: "156",
+      };
+
+      const { res, resBody } = await reqB.patch(values);
+
+      expect(res.status).toBe(400);
+      expect(resBody).toEqual({
+        name: "ValidationError",
+        message: "O nome enviado parece ser duplicado.",
+        action: 'Utilize um "nome" diferente.',
+        status_code: 400,
+        error_id: resBody.error_id,
+        request_id: resBody.request_id,
+        error_location_code:
+          "MODEL:INGREDIENT:CHECK_FOR_INGREDIENT_UNIQUENESS:ALREADY_EXISTS",
+        key: "name",
+      });
+      expect(uuidVersion(resBody.error_id)).toEqual(4);
+      expect(uuidVersion(resBody.request_id)).toEqual(4);
+    });
+
+    test("With unique name but invalid value", async () => {
+      const testingredient = await orchestrator.createIngredient();
+      const reqB = new RequestBuilder(
+        `/api/v1/ingredients/${testingredient.id}`,
+      );
+      await reqB.buildAdmin();
+
+      const values = {
+        name: "Chocolate",
+        value: "invalid",
+        price: "156",
+      };
+
+      const { res, resBody } = await reqB.patch(values);
+
+      expect(res.status).toBe(400);
+      expect(resBody).toEqual({
+        name: "ValidationError",
+        message: '"value" deve ser do tipo Number.',
+        action: "Ajuste os dados enviados e tente novamente.",
+        status_code: 400,
+        error_id: resBody.error_id,
+        request_id: resBody.request_id,
+        error_location_code: "MODEL:VALIDATOR:FINAL_SCHEMA",
+        key: "value",
+        type: "number.base",
+      });
+      expect(uuidVersion(resBody.error_id)).toEqual(4);
+      expect(uuidVersion(resBody.request_id)).toEqual(4);
+    });
+
+    test("With unique name but invalid price", async () => {
+      const testingredient = await orchestrator.createIngredient();
+      const reqB = new RequestBuilder(
+        `/api/v1/ingredients/${testingredient.id}`,
+      );
+      await reqB.buildAdmin();
+
+      const values = {
+        name: "Chocolate",
+        value: 48,
+        price: "invalid",
+      };
+
+      const { res, resBody } = await reqB.patch(values);
+
+      expect(res.status).toBe(400);
+      expect(resBody).toEqual({
+        name: "ValidationError",
+        message: '"price" deve ser do tipo Number.',
+        action: "Ajuste os dados enviados e tente novamente.",
+        status_code: 400,
+        error_id: resBody.error_id,
+        request_id: resBody.request_id,
+        error_location_code: "MODEL:VALIDATOR:FINAL_SCHEMA",
+        key: "price",
+        type: "number.base",
+      });
+      expect(uuidVersion(resBody.error_id)).toEqual(4);
+      expect(uuidVersion(resBody.request_id)).toEqual(4);
     });
   });
 });
