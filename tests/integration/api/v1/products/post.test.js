@@ -111,13 +111,13 @@ describe("POST to /api/v1/products", () => {
 
       expect(res2.status).toBe(400);
       expect(resBody2.name).toBe("ValidationError");
-      expect(resBody2.message).toBe("O conteúdo enviado parece ser duplicado.");
+      expect(resBody2.message).toBe("O nome enviado parece ser duplicado.");
       expect(resBody2.action).toBe('Utilize um "nome" diferente.');
       expect(resBody2.status_code).toBe(400);
       expect(uuidVersion(resBody2.error_id)).toEqual(4);
       expect(uuidVersion(resBody2.request_id)).toEqual(4);
       expect(resBody2.error_location_code).toBe(
-        "MODEL:CONTENT:CHECK_FOR_CONTENT_UNIQUENESS:ALREADY_EXISTS",
+        "MODEL:PRODUCT:CHECK_FOR_PRODUCT_UNIQUENESS:ALREADY_EXISTS",
       );
       expect(resBody2.key).toBe("name");
     });

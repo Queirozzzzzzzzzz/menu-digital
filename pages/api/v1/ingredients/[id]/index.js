@@ -15,23 +15,22 @@ export default nextConnect({
 })
   .use(controller.injectRequestMetadata)
   .use(controller.logRequest)
-  .get(authentication.injectUser, authorization.canRequest("admin"), getHandler)
-  .post(
+  .patch(
     authentication.injectUser,
-    postValidationHandler,
+    patchValidationHandler,
     authorization.canRequest("admin"),
-    postHandler,
+    patchHandler,
+  )
+  .get(
+    authentication.injectUser,
+    getValidationHandler,
+    authorization.canRequest("admin"),
+    getHandler,
   );
 
-async function getHandler(req, res) {
-  const ingredients = await ingredient.list();
-
-  return res.status(200).json(ingredients);
-}
-
-async function postValidationHandler(req, res, next) {
+async function patchValidationHandler(req, res, next) {
   const cleanValues = validator(req.body, {
-    name: "required",
+    name: "optional",
     value: "optional",
     price: "optional",
   });
@@ -41,7 +40,7 @@ async function postValidationHandler(req, res, next) {
   next();
 }
 
-async function postHandler(req, res) {
+async function patchHandler(req, res) {
   let newIngredient;
 
   const transaction = await db.transaction();
@@ -49,7 +48,9 @@ async function postHandler(req, res) {
   try {
     transaction.query("BEGIN");
 
-    newIngredient = await ingredient.create(req.body, { transaction });
+    newIngredient = await ingredient.edit(req.query.id, req.body, {
+      transaction,
+    });
 
     transaction.query("COMMIT");
   } catch (err) {
@@ -61,7 +62,7 @@ async function postHandler(req, res) {
         action: `Utilize um "nome" diferente.`,
         stack: new Error().stack,
         errorLocationCode:
-          "MODEL:PRODUCT:CHECK_FOR_PRODUCT_UNIQUENESS:ALREADY_EXISTS",
+          "MODEL:INGREDIENT:CHECK_FOR_INGREDIENT_UNIQUENESS:ALREADY_EXISTS",
         statusCode: 400,
         key: "name",
       });
@@ -72,5 +73,21 @@ async function postHandler(req, res) {
     transaction.release();
   }
 
-  return res.status(201).json(newIngredient);
+  return res.status(200).json(newIngredient);
+}
+
+async function getValidationHandler(req, res, next) {
+  const cleanValues = validator(req.query, {
+    id: "required",
+  });
+
+  req.query = cleanValues;
+
+  next();
+}
+
+async function getHandler(req, res) {
+  const ingredients = await ingredient.findById(req.query.id);
+
+  return res.status(200).json(ingredients);
 }

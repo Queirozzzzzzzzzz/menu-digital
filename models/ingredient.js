@@ -19,6 +19,7 @@ async function create(values, options = {}) {
 async function edit(id, values, options = {}) {
   const oldIngredient = await findById(id);
   values = { ...oldIngredient, ...values };
+  console.log(values);
 
   const query = {
     text: `
@@ -64,6 +65,8 @@ async function findById(id, options = {}) {
   };
 
   const res = await db.query(query, options);
+
+  console.log(res.rows);
 
   if (res.rowCount === 0) {
     throw new NotFoundError({

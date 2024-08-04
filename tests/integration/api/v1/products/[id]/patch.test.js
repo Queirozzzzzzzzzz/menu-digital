@@ -148,13 +148,13 @@ describe("PATCH to /api/v1/products", () => {
       expect(res.status).toBe(400);
       expect(resBody).toEqual({
         name: "ValidationError",
-        message: "O conteúdo enviado parece ser duplicado.",
+        message: "O nome enviado parece ser duplicado.",
         action: 'Utilize um "nome" diferente.',
         status_code: 400,
         error_id: resBody.error_id,
         request_id: resBody.request_id,
         error_location_code:
-          "MODEL:CONTENT:CHECK_FOR_CONTENT_UNIQUENESS:ALREADY_EXISTS",
+          "MODEL:PRODUCT:CHECK_FOR_PRODUCT_UNIQUENESS:ALREADY_EXISTS",
         key: "name",
       });
       expect(uuidVersion(resBody.error_id)).toEqual(4);

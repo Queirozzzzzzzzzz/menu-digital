@@ -53,11 +53,11 @@ async function postHandler(req, res) {
 
     if (err.databaseErrorCode === db.errorCodes.UNIQUE_CONSTRAINT_VIOLATION) {
       throw new ValidationError({
-        message: `O conteúdo enviado parece ser duplicado.`,
+        message: `O nome enviado parece ser duplicado.`,
         action: `Utilize um "nome" diferente.`,
         stack: new Error().stack,
         errorLocationCode:
-          "MODEL:CONTENT:CHECK_FOR_CONTENT_UNIQUENESS:ALREADY_EXISTS",
+          "MODEL:PRODUCT:CHECK_FOR_PRODUCT_UNIQUENESS:ALREADY_EXISTS",
         statusCode: 400,
         key: "name",
       });
