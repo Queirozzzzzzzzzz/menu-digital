@@ -139,9 +139,9 @@ const schemas = {
     });
   },
 
-  product_name: function () {
+  name: function () {
     return Joi.object({
-      product_name: Joi.string()
+      name: Joi.string()
         .pattern(
           /^(\s|\p{C}|\u2800|\u034f|\u115f|\u1160|\u17b4|\u17b5|\u3164|\uffa0).*$/su,
           { invert: true },
@@ -152,7 +152,7 @@ const schemas = {
         )
         .min(1)
         .max(128)
-        .when("$required.product_name", {
+        .when("$required.name", {
           is: "required",
           then: Joi.required(),
           otherwise: Joi.optional(),
@@ -163,12 +163,12 @@ const schemas = {
     });
   },
 
-  product_category: function () {
+  category: function () {
     return Joi.object({
-      product_category: Joi.string()
+      category: Joi.string()
         .trim()
-        .valid("coffee", "sweets", "snacks", "teas")
-        .when("$required.product_category", {
+        .valid("coffees", "sweets", "snacks", "teas")
+        .when("$required.category", {
           is: "required",
           then: Joi.required(),
           otherwise: Joi.optional(),
@@ -219,6 +219,16 @@ const schemas = {
             otherwise: Joi.optional(),
           }),
       ),
+    });
+  },
+
+  id: function () {
+    return Joi.object({
+      id: Joi.number().integer().when("$required.id", {
+        is: "required",
+        then: Joi.required(),
+        otherwise: Joi.optional(),
+      }),
     });
   },
 };

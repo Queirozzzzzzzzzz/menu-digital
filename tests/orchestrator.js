@@ -111,10 +111,10 @@ async function addFeaturesToUser(userObj, features) {
 async function createProduct(values = {}) {
   const info = {
     ingredients_ids: values.ingredients_ids || [],
-    product_name: values.product_name || getFakeName(),
-    product_category: values.product_category || "coffee",
-    price: values.price || "22.90",
-    picture: values.picture || "https://image_url_path.jpg",
+    name: values.name || getFakeName(),
+    category: values.category || "snacks",
+    price: values.price || "1.90",
+    picture: values.picture || "https://url_path.jpg",
   };
 
   let productObj = await product.create(info);

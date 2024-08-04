@@ -18,7 +18,7 @@ exports.up = (pgm) => {
     category: {
       type: "varchar(10)",
       notNull: true,
-      check: "category IN ('coffee', 'sweets', 'snacks', 'teas')",
+      check: "category IN ('coffees', 'sweets', 'snacks', 'teas')",
     },
 
     status: {
@@ -35,6 +35,18 @@ exports.up = (pgm) => {
 
     picture: {
       type: "varchar(255)",
+    },
+
+    created_at: {
+      type: "timestamp with time zone",
+      notNull: true,
+      default: pgm.func("(now() at time zone 'utc')"),
+    },
+
+    updated_at: {
+      type: "timestamp with time zone",
+      notNull: true,
+      default: pgm.func("(now() at time zone 'utc')"),
     },
   });
 };

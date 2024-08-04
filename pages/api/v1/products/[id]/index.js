@@ -15,21 +15,21 @@ export default nextConnect({
 })
   .use(controller.injectRequestMetadata)
   .use(controller.logRequest)
-  .post(
+  .patch(
     authentication.injectUser,
-    postValidationHandler,
+    patchValidationHandler,
     authorization.canRequest("admin"),
-    postHandler,
+    patchHandler,
   )
   .get(getValidationHandler, getHandler);
 
-async function postValidationHandler(req, res, next) {
+async function patchValidationHandler(req, res, next) {
   const cleanValues = validator(req.body, {
     ingredients_ids: "optional",
-    name: "required",
-    category: "required",
-    price: "required",
-    picture: "required",
+    name: "optional",
+    category: "optional",
+    price: "optional",
+    picture: "optional",
   });
 
   req.body = cleanValues;
@@ -37,7 +37,7 @@ async function postValidationHandler(req, res, next) {
   next();
 }
 
-async function postHandler(req, res) {
+async function patchHandler(req, res) {
   let newProduct;
 
   const transaction = await db.transaction();
@@ -45,7 +45,7 @@ async function postHandler(req, res) {
   try {
     transaction.query("BEGIN");
 
-    newProduct = await product.create(req.body, { transaction });
+    newProduct = await product.edit(req.query.id, req.body, { transaction });
 
     transaction.query("COMMIT");
   } catch (err) {
@@ -68,24 +68,21 @@ async function postHandler(req, res) {
     transaction.release();
   }
 
-  return res.status(201).json(newProduct);
+  return res.status(200).json(newProduct);
 }
 
 async function getValidationHandler(req, res, next) {
-  if (req.query.product_status)
-    req.query.product_status = req.query.product_status.split(",");
-
   const cleanValues = validator(req.query, {
-    product_status: "required",
+    id: "required",
   });
 
-  req.body = cleanValues;
+  req.query = cleanValues;
 
   next();
 }
 
 async function getHandler(req, res) {
-  const products = await product.listByStatus(req.query.product_status);
+  const products = await product.findById(req.query.id);
 
   return res.status(200).json(products);
 }

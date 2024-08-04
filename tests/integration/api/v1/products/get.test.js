@@ -10,7 +10,7 @@ beforeAll(async () => {
   await orchestrator.runPendingMigrations();
 });
 
-describe("GET /api/v1/products", () => {
+describe("GET to /api/v1/products", () => {
   describe("No user", () => {
     test("With 1 valid product_status array", async () => {
       const reqB = new RequestBuilder(
