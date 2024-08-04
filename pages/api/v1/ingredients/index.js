@@ -30,10 +30,13 @@ async function getHandler(req, res) {
 }
 
 async function postValidationHandler(req, res, next) {
+  const isAdditionalFeaturesRequired =
+    req.body.value || req.body.price ? "required" : "optional";
+
   const cleanValues = validator(req.body, {
     name: "required",
-    value: "optional",
-    price: "optional",
+    value: isAdditionalFeaturesRequired,
+    price: isAdditionalFeaturesRequired,
   });
 
   req.body = cleanValues;

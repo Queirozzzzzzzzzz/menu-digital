@@ -178,7 +178,15 @@ const schemas = {
 
   price: function () {
     return Joi.object({
-      price: Joi.number().precision(10, 2).min(0).max(99999999.99),
+      price: Joi.number()
+        .precision(10, 2)
+        .min(0)
+        .max(99999999.99)
+        .when("$required.price", {
+          is: "required",
+          then: Joi.required(),
+          otherwise: Joi.optional(),
+        }),
     });
   },
 

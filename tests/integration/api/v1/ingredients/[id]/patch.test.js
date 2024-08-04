@@ -116,6 +116,37 @@ describe("PATCH to /api/v1/ingredients", () => {
       expect(resBody.price).toEqual("156.00");
     });
 
+    test("With unique name and valid data but price is null", async () => {
+      const testingredient = await orchestrator.createIngredient({ price: 19 });
+      const reqB = new RequestBuilder(
+        `/api/v1/ingredients/${testingredient.id}`,
+      );
+      await reqB.buildAdmin();
+
+      const values = {
+        name: "Chocolate",
+        value: 32,
+        price: null,
+      };
+
+      const { res, resBody } = await reqB.patch(values);
+
+      expect(res.status).toBe(400);
+      expect(resBody).toEqual({
+        name: "ValidationError",
+        message: '"price" deve ser do tipo Number.',
+        action: "Ajuste os dados enviados e tente novamente.",
+        status_code: 400,
+        error_id: resBody.error_id,
+        request_id: resBody.request_id,
+        error_location_code: "MODEL:VALIDATOR:FINAL_SCHEMA",
+        key: "price",
+        type: "number.base",
+      });
+      expect(uuidVersion(resBody.error_id)).toEqual(4);
+      expect(uuidVersion(resBody.request_id)).toEqual(4);
+    });
+
     test("With non-unique name and full valid data", async () => {
       const testingredient = await orchestrator.createIngredient();
       const testingredient2 = await orchestrator.createIngredient();

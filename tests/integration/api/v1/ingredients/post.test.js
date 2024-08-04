@@ -138,6 +138,7 @@ describe("POST to /api/v1/ingredients", () => {
       const values = {
         name: "Chocolate",
         value: "invalid",
+        price: 15.48,
       };
 
       const { res, resBody } = await reqB.post(values);
@@ -164,6 +165,7 @@ describe("POST to /api/v1/ingredients", () => {
 
       const values = {
         name: "Chocolate",
+        value: 5,
         price: "invalid",
       };
 
@@ -180,6 +182,60 @@ describe("POST to /api/v1/ingredients", () => {
         error_location_code: "MODEL:VALIDATOR:FINAL_SCHEMA",
         key: "price",
         type: "number.base",
+      });
+      expect(uuidVersion(resBody.error_id)).toEqual(4);
+      expect(uuidVersion(resBody.request_id)).toEqual(4);
+    });
+
+    test("With unique name and valid value but missing price", async () => {
+      const reqB = new RequestBuilder("/api/v1/ingredients");
+      await reqB.buildAdmin();
+
+      const values = {
+        name: "Chocolate",
+        value: 5,
+      };
+
+      const { res, resBody } = await reqB.post(values);
+
+      expect(res.status).toBe(400);
+      expect(resBody).toEqual({
+        name: "ValidationError",
+        message: '"price" é um campo obrigatório.',
+        action: "Ajuste os dados enviados e tente novamente.",
+        status_code: 400,
+        error_id: resBody.error_id,
+        request_id: resBody.request_id,
+        error_location_code: "MODEL:VALIDATOR:FINAL_SCHEMA",
+        key: "price",
+        type: "any.required",
+      });
+      expect(uuidVersion(resBody.error_id)).toEqual(4);
+      expect(uuidVersion(resBody.request_id)).toEqual(4);
+    });
+
+    test("With unique name and valid price but missing value", async () => {
+      const reqB = new RequestBuilder("/api/v1/ingredients");
+      await reqB.buildAdmin();
+
+      const values = {
+        name: "Chocolate",
+        price: 27,
+      };
+
+      const { res, resBody } = await reqB.post(values);
+
+      expect(res.status).toBe(400);
+      expect(resBody).toEqual({
+        name: "ValidationError",
+        message: '"value" é um campo obrigatório.',
+        action: "Ajuste os dados enviados e tente novamente.",
+        status_code: 400,
+        error_id: resBody.error_id,
+        request_id: resBody.request_id,
+        error_location_code: "MODEL:VALIDATOR:FINAL_SCHEMA",
+        key: "value",
+        type: "any.required",
       });
       expect(uuidVersion(resBody.error_id)).toEqual(4);
       expect(uuidVersion(resBody.request_id)).toEqual(4);

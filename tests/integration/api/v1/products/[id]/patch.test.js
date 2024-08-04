@@ -209,7 +209,6 @@ describe("PATCH to /api/v1/products", () => {
       };
 
       const { res, resBody } = await reqB.patch(values);
-      console.log(resBody);
 
       expect(res.status).toBe(400);
       expect(resBody).toEqual({
