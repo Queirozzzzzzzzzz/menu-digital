@@ -182,6 +182,16 @@ const schemas = {
     });
   },
 
+  value: function () {
+    return Joi.object({
+      value: Joi.number().integer().when("$required.value", {
+        is: "required",
+        then: Joi.required(),
+        otherwise: Joi.optional(),
+      }),
+    });
+  },
+
   picture: function () {
     return Joi.object({
       picture: Joi.string()

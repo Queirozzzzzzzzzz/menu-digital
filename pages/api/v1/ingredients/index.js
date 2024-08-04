@@ -31,11 +31,9 @@ async function getHandler(req, res) {
 
 async function postValidationHandler(req, res, next) {
   const cleanValues = validator(req.body, {
-    ingredients_ids: "optional",
     name: "required",
-    category: "required",
-    price: "required",
-    picture: "required",
+    value: "optional",
+    price: "optional",
   });
 
   req.body = cleanValues;
@@ -44,14 +42,14 @@ async function postValidationHandler(req, res, next) {
 }
 
 async function postHandler(req, res) {
-  let newProduct;
+  let newIngredient;
 
   const transaction = await db.transaction();
 
   try {
     transaction.query("BEGIN");
 
-    newProduct = await product.create(req.body, { transaction });
+    newIngredient = await ingredient.create(req.body, { transaction });
 
     transaction.query("COMMIT");
   } catch (err) {
@@ -74,5 +72,5 @@ async function postHandler(req, res) {
     transaction.release();
   }
 
-  return res.status(201).json(newProduct);
+  return res.status(201).json(newIngredient);
 }
