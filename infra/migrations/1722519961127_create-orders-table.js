@@ -16,7 +16,7 @@ exports.up = (pgm) => {
       notNull: true,
     },
 
-    table: {
+    table_number: {
       type: "integer",
       notNull: true,
     },
@@ -28,13 +28,20 @@ exports.up = (pgm) => {
     status: {
       type: "varchar(10)",
       check: "status IN ('pending', 'accepted', 'declined', 'finished')",
+      default: "pending",
       notNull: true,
     },
 
-    ordered_at: {
-      type: "timestamp",
-      default: pgm.func("CURRENT_TIMESTAMP"),
+    created_at: {
+      type: "timestamp with time zone",
       notNull: true,
+      default: pgm.func("(now() at time zone 'utc')"),
+    },
+
+    updated_at: {
+      type: "timestamp with time zone",
+      notNull: true,
+      default: pgm.func("(now() at time zone 'utc')"),
     },
   });
 };

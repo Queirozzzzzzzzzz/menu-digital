@@ -9,6 +9,7 @@ import user from "models/user";
 import session from "models/session";
 import product from "models/product";
 import ingredient from "models/ingredient";
+import order from "models/order";
 
 if (process.env.NODE_ENV !== "test") {
   throw new Error({
@@ -140,6 +141,26 @@ async function createIngredient(values = {}) {
   return await ingredient.create(info);
 }
 
+async function createOrder(values = {}) {
+  const info = {
+    product_id: values.product_id,
+    price: values.price || 47.27,
+    table_number: values.table_number || 12,
+    observation: values.observation || null,
+  };
+
+  let orderObj = await order.create(info);
+
+  if (values.status)
+    orderObj = await setOrderStatus(orderObj.id, values.status);
+
+  return await orderObj;
+}
+
+async function setOrderStatus(id, status) {
+  return await order.setStatus(id, status);
+}
+
 // Functions
 
 const usedFakeNames = new Set();
@@ -179,6 +200,7 @@ const orchestrator = {
   createProduct,
   setProductStatus,
   createIngredient,
+  createOrder,
 };
 
 export default orchestrator;

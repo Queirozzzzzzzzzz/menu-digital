@@ -249,4 +249,19 @@ const schemas = {
       }),
     });
   },
+
+  order_status: function () {
+    return Joi.object({
+      order_status: Joi.array().items(
+        Joi.string()
+          .valid("pending", "accepted", "declined", "finished")
+          .min(0)
+          .when("$required.order_status", {
+            is: "required",
+            then: Joi.required(),
+            otherwise: Joi.optional(),
+          }),
+      ),
+    });
+  },
 };

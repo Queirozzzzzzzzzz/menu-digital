@@ -34,7 +34,6 @@ describe("GET to /api/v1/products", () => {
 
       const { res, resBody } = await reqB.get();
 
-      console.log(resBody);
       expect(res.status).toBe(200);
       expect(resBody.length).toBe(1);
     });
