@@ -159,12 +159,14 @@ async function tryToGetNewClient() {
   }
 }
 
+const INVALID_FOREIGN_KEY = "23503";
 const UNIQUE_CONSTRAINT_VIOLATION = "23505";
 const SERIALIZATION_FAILURE = "40001";
 const UNDEFINED_FUNCTION = "42883";
 
 function parseQueryErrorAndLog(err, query) {
   const expectedErrorsCode = [
+    INVALID_FOREIGN_KEY,
     UNIQUE_CONSTRAINT_VIOLATION,
     SERIALIZATION_FAILURE,
   ];
@@ -199,6 +201,7 @@ export default {
   getNewClient,
   transaction,
   errorCodes: {
+    INVALID_FOREIGN_KEY,
     UNIQUE_CONSTRAINT_VIOLATION,
     SERIALIZATION_FAILURE,
     UNDEFINED_FUNCTION,

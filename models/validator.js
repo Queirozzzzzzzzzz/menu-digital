@@ -264,4 +264,41 @@ const schemas = {
       ),
     });
   },
+
+  product_id: function () {
+    return Joi.object({
+      product_id: Joi.number().integer().when("$required.product_id", {
+        is: "required",
+        then: Joi.required(),
+        otherwise: Joi.optional(),
+      }),
+    });
+  },
+
+  table_number: function () {
+    return Joi.object({
+      table_number: Joi.number().integer().when("$required.table_number", {
+        is: "required",
+        then: Joi.required(),
+        otherwise: Joi.optional(),
+      }),
+    });
+  },
+
+  observation: function () {
+    return Joi.object({
+      observation: Joi.string()
+        .replace(
+          /(\s|\p{C}|\u2800|\u034f|\u115f|\u1160|\u17b4|\u17b5|\u3164|\uffa0)+$|\u0000/gsu,
+          "",
+        )
+        .max(160)
+        .allow("")
+        .when("$required.observation", {
+          is: "required",
+          then: Joi.required(),
+          otherwise: Joi.optional(),
+        }),
+    });
+  },
 };
