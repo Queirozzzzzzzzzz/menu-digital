@@ -27,7 +27,7 @@ async function patchValidationHandler(req, res, next) {
   const cleanValues = validator(req.body, {
     ingredients_ids: "optional",
     name: "optional",
-    category: "optional",
+    category_id: "optional",
     price: "optional",
     picture: "optional",
   });

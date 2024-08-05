@@ -4,14 +4,14 @@ import db from "infra/database";
 async function create(values, options = {}) {
   const query = {
     text: `
-    INSERT INTO products (ingredients_ids, name, category, price, picture)
+    INSERT INTO products (category_id, ingredients_ids, name, price, picture)
     VALUES ($1, $2, $3, $4, $5)
     RETURNING *;
     `,
     values: [
+      values.category_id,
       values.ingredients_ids,
       values.name,
-      values.category,
       values.price,
       values.picture,
     ],
@@ -32,7 +32,7 @@ async function edit(id, values, options = {}) {
     SET 
       ingredients_ids = $2, 
       name = $3, 
-      category = $4, 
+      category_id = $4, 
       price = $5, 
       picture = $6,
       updated_at = (now() at time zone 'utc')
@@ -43,7 +43,7 @@ async function edit(id, values, options = {}) {
       id,
       values.ingredients_ids,
       values.name,
-      values.category,
+      values.category_id,
       values.price,
       values.picture,
     ],

@@ -1,19 +1,14 @@
 import { NotFoundError } from "errors";
 import db from "infra/database";
 
-async function create(values, options = {}) {
+async function create(name, options = {}) {
   const query = {
     text: `
-    INSERT INTO orders (product_id, price, table_number, observation)
-    VALUES ($1, $2, $3, $4)
+    INSERT INTO categories (name)
+    VALUES ($1)
     RETURNING *;
     `,
-    values: [
-      values.product_id,
-      values.price,
-      values.table_number,
-      values.observation,
-    ],
+    values: [name],
   };
 
   const res = await db.query(query, options);
@@ -22,28 +17,20 @@ async function create(values, options = {}) {
 }
 
 async function edit(id, values, options = {}) {
-  const oldOrder = await findById(id);
-  values = { ...oldOrder, ...values };
+  const oldCategory = await findById(id);
+  values = { ...oldCategory, ...values };
 
   const query = {
     text: `
-    UPDATE orders 
+    UPDATE categories 
     SET 
-      product_id = $2,
-      price = $3,
-      table_number = $4,
-      observation = $5,
+      name = $2,
+      status = $3,
       updated_at = (now() at time zone 'utc')
     WHERE id = $1
     RETURNING *;
     `,
-    values: [
-      id,
-      values.product_id,
-      values.price,
-      values.table_number,
-      values.observation,
-    ],
+    values: [id, values.name, values.status],
   };
 
   const res = await db.query(query, options);
@@ -55,7 +42,7 @@ async function listByStatus(status = [], options = {}) {
   const query = {
     text: `
     SELECT *
-    FROM orders
+    FROM categories
     WHERE status = ANY($1);
     `,
     values: [status],
@@ -70,7 +57,7 @@ async function findById(id, options = {}) {
   const query = {
     text: `
     SELECT *
-    FROM orders
+    FROM categories
     WHERE id = $1;
     `,
     values: [id],
@@ -92,7 +79,7 @@ async function findById(id, options = {}) {
 async function setStatus(id, status, options = {}) {
   const query = {
     text: `
-    UPDATE orders
+    UPDATE categories
     SET status = $2
     WHERE id = $1
     RETURNING *;
@@ -105,7 +92,7 @@ async function setStatus(id, status, options = {}) {
   return res.rows;
 }
 
-const order = {
+const category = {
   create,
   edit,
   listByStatus,
@@ -113,4 +100,4 @@ const order = {
   setStatus,
 };
 
-export default order;
+export default category;

@@ -27,7 +27,7 @@ async function postValidationHandler(req, res, next) {
   const cleanValues = validator(req.body, {
     ingredients_ids: "optional",
     name: "required",
-    category: "required",
+    category_id: "required",
     price: "required",
     picture: "required",
   });

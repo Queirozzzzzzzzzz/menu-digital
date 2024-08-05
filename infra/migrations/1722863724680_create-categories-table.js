@@ -1,12 +1,8 @@
 exports.up = (pgm) => {
-  pgm.createTable("products", {
+  pgm.createTable("categories", {
     id: {
       type: "serial",
       primaryKey: true,
-    },
-
-    ingredients_ids: {
-      type: "integer[]",
     },
 
     name: {
@@ -17,18 +13,9 @@ exports.up = (pgm) => {
 
     status: {
       type: "varchar(10)",
-      notNull: true,
+      check: "status IN ('available', 'disabled')",
       default: "available",
-      check: "status IN ('available', 'missing', 'disabled')",
-    },
-
-    price: {
-      type: "decimal(10, 2)",
       notNull: true,
-    },
-
-    picture: {
-      type: "varchar(255)",
     },
 
     created_at: {
@@ -46,5 +33,5 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
-  pgm.dropTable("products");
+  pgm.dropTable("categories");
 };

@@ -17,6 +17,7 @@ describe("GET to /api/v1/products/[id]", () => {
     });
 
     test("With valid id", async () => {
+      const testCategory = await orchestrator.createCategory();
       const testProduct = await orchestrator.createProduct();
       const reqB = new RequestBuilder(`/api/v1/products/${testProduct.id}`);
 
@@ -26,7 +27,7 @@ describe("GET to /api/v1/products/[id]", () => {
       expect(resBody.id).toEqual(testProduct.id);
       expect(resBody.ingredients_ids).toEqual(testProduct.ingredients_ids);
       expect(resBody.name).toEqual(testProduct.name);
-      expect(resBody.category).toEqual(testProduct.category);
+      expect(resBody.category_id).toEqual(testProduct.category_id);
       expect(resBody.status).toEqual(testProduct.status);
       expect(resBody.price).toEqual(testProduct.price);
       expect(resBody.picture).toEqual(testProduct.picture);
@@ -51,7 +52,7 @@ describe("GET to /api/v1/products/[id]", () => {
       expect(resBody.id).toEqual(testProduct.id);
       expect(resBody.ingredients_ids).toEqual(testProduct.ingredients_ids);
       expect(resBody.name).toEqual(testProduct.name);
-      expect(resBody.category).toEqual(testProduct.category);
+      expect(resBody.category_id).toEqual(testProduct.category_id);
       expect(resBody.status).toEqual(testProduct.status);
       expect(resBody.price).toEqual(testProduct.price);
       expect(resBody.picture).toEqual(testProduct.picture);
