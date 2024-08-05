@@ -170,6 +170,10 @@ async function createCategory(name) {
   return await category.create(name);
 }
 
+async function setCategoryStatus(id, status) {
+  return await category.setStatus(id, status);
+}
+
 // Functions
 
 const usedFakeNames = new Set();
@@ -211,6 +215,7 @@ const orchestrator = {
   createIngredient,
   createOrder,
   createCategory,
+  setCategoryStatus,
 };
 
 export default orchestrator;

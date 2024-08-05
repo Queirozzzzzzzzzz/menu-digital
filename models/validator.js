@@ -173,6 +173,21 @@ const schemas = {
     });
   },
 
+  category_status: function () {
+    return Joi.object({
+      category_status: Joi.array().items(
+        Joi.string()
+          .valid("available", "disabled")
+          .min(0)
+          .when("$required.category_status", {
+            is: "required",
+            then: Joi.required(),
+            otherwise: Joi.optional(),
+          }),
+      ),
+    });
+  },
+
   price: function () {
     return Joi.object({
       price: Joi.number()
