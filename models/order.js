@@ -89,7 +89,7 @@ async function findById(id, options = {}) {
   return res.rows[0];
 }
 
-async function setStatus(id, status, options = {}) {
+async function setStatus(id, status = [], options = {}) {
   const query = {
     text: `
     UPDATE orders
@@ -97,12 +97,20 @@ async function setStatus(id, status, options = {}) {
     WHERE id = $1
     RETURNING *;
     `,
-    values: [id, status],
+    values: [id, status[0]],
   };
 
   const res = await db.query(query, options);
 
-  return res.rows;
+  if (res.rowCount === 0) {
+    throw new NotFoundError({
+      message: `O pedido não foi encontrado no sistema.`,
+      action: 'Verifique se o "id" do pedido está digitado corretamente.',
+      stack: new Error().stack,
+    });
+  }
+
+  return res.rows[0];
 }
 
 const order = {

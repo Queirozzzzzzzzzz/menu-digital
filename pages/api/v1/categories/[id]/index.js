@@ -57,21 +57,9 @@ async function patchHandler(req, res) {
   } catch (err) {
     await transaction.query("ROLLBACK");
 
-    if (err.databaseErrorCode === db.errorCodes.UNIQUE_CONSTRAINT_VIOLATION) {
-      throw new ValidationError({
-        message: `O nome enviado parece ser duplicado.`,
-        action: `Utilize um "nome" diferente.`,
-        stack: new Error().stack,
-        errorLocationCode:
-          "MODEL:CATEGORY:CHECK_FOR_CATEGORY_UNIQUENESS:ALREADY_EXISTS",
-        statusCode: 400,
-        key: "name",
-      });
-    }
-
     if (err.databaseErrorCode === db.errorCodes.INVALID_FOREIGN_KEY) {
       throw new NotFoundError({
-        message: `A categoria selecionado não foi encontrado.`,
+        message: `A categoria selecionado não foi encontrada.`,
         action: `Verifique a "category_id" utilizada e tente novamente.`,
         stack: new Error().stack,
         errorLocationCode: "MODEL:CATEGORY:CHECK_FOR_CATEGORY_ID:NOT_FOUND",

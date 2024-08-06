@@ -155,12 +155,12 @@ async function createOrder(values = {}) {
   let orderObj = await order.create(info);
 
   if (values.status)
-    orderObj = await setOrderStatus(orderObj.id, values.status);
+    orderObj = await setOrderStatus(orderObj.id, [values.status]);
 
   return await orderObj;
 }
 
-async function setOrderStatus(id, status) {
+async function setOrderStatus(id, status = []) {
   return await order.setStatus(id, status);
 }
 
@@ -170,7 +170,7 @@ async function createCategory(name) {
   return await category.create(name);
 }
 
-async function setCategoryStatus(id, status) {
+async function setCategoryStatus(id, status = []) {
   return await category.setStatus(id, status);
 }
 

@@ -40,7 +40,7 @@ describe("GET to /api/v1/categories", () => {
       await orchestrator.createProduct();
       await orchestrator.createCategory();
       const disabledCategory = await orchestrator.createCategory();
-      await orchestrator.setCategoryStatus(disabledCategory.id, "disabled");
+      await orchestrator.setCategoryStatus(disabledCategory.id, ["disabled"]);
 
       const categoriesInDb = await db.query("SELECT * FROM categories;");
       expect(categoriesInDb.rows.length).toBe(3);
