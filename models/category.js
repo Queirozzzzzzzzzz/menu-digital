@@ -67,8 +67,8 @@ async function findById(id, options = {}) {
 
   if (res.rowCount === 0) {
     throw new NotFoundError({
-      message: `O pedido não foi encontrado no sistema.`,
-      action: 'Verifique se o "id" do pedido está digitado corretamente.',
+      message: `A categoria não foi encontrada no sistema.`,
+      action: 'Verifique se o "id" da categoria está digitado corretamente.',
       stack: new Error().stack,
     });
   }
@@ -76,7 +76,7 @@ async function findById(id, options = {}) {
   return res.rows[0];
 }
 
-async function setStatus(id, status, options = {}) {
+async function setStatus(id, status = [], options = {}) {
   const query = {
     text: `
     UPDATE categories
@@ -84,12 +84,20 @@ async function setStatus(id, status, options = {}) {
     WHERE id = $1
     RETURNING *;
     `,
-    values: [id, status],
+    values: [id, status[0]],
   };
 
   const res = await db.query(query, options);
 
-  return res.rows;
+  if (res.rowCount === 0) {
+    throw new NotFoundError({
+      message: `A categoria não foi encontrada no sistema.`,
+      action: 'Verifique se o "id" da categoria está digitado corretamente.',
+      stack: new Error().stack,
+    });
+  }
+
+  return res.rows[0];
 }
 
 const category = {
