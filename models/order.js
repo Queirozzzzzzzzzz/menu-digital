@@ -16,39 +16,9 @@ async function create(values, options = {}) {
     ],
   };
 
-  const res = await db.query(query, options);
+  const orderRes = await db.query(query, options);
 
-  return res.rows[0];
-}
-
-async function edit(id, values, options = {}) {
-  const oldOrder = await findById(id);
-  values = { ...oldOrder, ...values };
-
-  const query = {
-    text: `
-    UPDATE orders 
-    SET 
-      product_id = $2,
-      price = $3,
-      table_number = $4,
-      observation = $5,
-      updated_at = (now() at time zone 'utc')
-    WHERE id = $1
-    RETURNING *;
-    `,
-    values: [
-      id,
-      values.product_id,
-      values.price,
-      values.table_number,
-      values.observation,
-    ],
-  };
-
-  const res = await db.query(query, options);
-
-  return res.rows[0];
+  return orderRes.rows[0];
 }
 
 async function listByStatus(status = [], options = {}) {
@@ -115,7 +85,6 @@ async function setStatus(id, status = [], options = {}) {
 
 const order = {
   create,
-  edit,
   listByStatus,
   findById,
   setStatus,

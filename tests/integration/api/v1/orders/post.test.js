@@ -11,33 +11,6 @@ beforeAll(async () => {
 
 describe("POST to /api/v1/orders", () => {
   describe("No user", () => {
-    test("Retrieving endpoint", async () => {
-      const reqB = new RequestBuilder("/api/v1/orders");
-      const product = await orchestrator.createProduct();
-
-      const values = {
-        product_id: product.id,
-        price: 48.99,
-        table_number: 8,
-        observation: "Observação",
-      };
-
-      const { res, resBody } = await reqB.post(values);
-
-      expect(res.status).toBe(403);
-      expect(resBody.name).toEqual("ForbiddenError");
-      expect(resBody.message).toEqual("Usuário não encontrado.");
-      expect(resBody.action).toEqual("Verifique se o usuário está logado.");
-      expect(resBody.status_code).toBe(403);
-      expect(uuidVersion(resBody.error_id)).toEqual(4);
-      expect(uuidVersion(resBody.request_id)).toEqual(4);
-      expect(resBody.error_location_code).toEqual(
-        "MODEL:AUTHORIZATION:CAN_REQUEST:USER_NOT_FOUND",
-      );
-    });
-  });
-
-  describe("Admin user", () => {
     beforeEach(async () => {
       await orchestrator.dropAllTables();
       await orchestrator.runPendingMigrations();
@@ -45,7 +18,7 @@ describe("POST to /api/v1/orders", () => {
 
     test("With full valid data", async () => {
       const reqB = new RequestBuilder("/api/v1/orders");
-      await reqB.buildAdmin();
+
       const ingredient1 = await orchestrator.createIngredient();
       const ingredient2 = await orchestrator.createIngredient();
       const product = await orchestrator.createProduct({
@@ -73,7 +46,7 @@ describe("POST to /api/v1/orders", () => {
 
     test("With valid data and without observation", async () => {
       const reqB = new RequestBuilder("/api/v1/orders");
-      await reqB.buildAdmin();
+
       const ingredient1 = await orchestrator.createIngredient();
       const ingredient2 = await orchestrator.createIngredient();
       const product = await orchestrator.createProduct({
@@ -100,7 +73,6 @@ describe("POST to /api/v1/orders", () => {
 
     test("With invalid product_id", async () => {
       const reqB = new RequestBuilder("/api/v1/orders");
-      await reqB.buildAdmin();
 
       const values = {
         product_id: 2,
@@ -127,7 +99,7 @@ describe("POST to /api/v1/orders", () => {
 
     test("Without price", async () => {
       const reqB = new RequestBuilder("/api/v1/orders");
-      await reqB.buildAdmin();
+
       const ingredient1 = await orchestrator.createIngredient();
       const ingredient2 = await orchestrator.createIngredient();
       const product = await orchestrator.createProduct({
@@ -160,7 +132,7 @@ describe("POST to /api/v1/orders", () => {
 
     test("Without table_number", async () => {
       const reqB = new RequestBuilder("/api/v1/orders");
-      await reqB.buildAdmin();
+
       const ingredient1 = await orchestrator.createIngredient();
       const ingredient2 = await orchestrator.createIngredient();
       const product = await orchestrator.createProduct({
@@ -193,7 +165,7 @@ describe("POST to /api/v1/orders", () => {
 
     test("Without product_id", async () => {
       const reqB = new RequestBuilder("/api/v1/orders");
-      await reqB.buildAdmin();
+
       const ingredient1 = await orchestrator.createIngredient();
       const ingredient2 = await orchestrator.createIngredient();
       const product = await orchestrator.createProduct({

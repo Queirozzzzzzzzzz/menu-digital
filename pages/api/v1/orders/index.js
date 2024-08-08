@@ -21,12 +21,7 @@ export default nextConnect({
     authorization.canRequest("admin"),
     getHandler,
   )
-  .post(
-    authentication.injectUser,
-    postValidationHandler,
-    authorization.canRequest("admin"),
-    postHandler,
-  );
+  .post(postValidationHandler, postHandler);
 
 async function getValidationHandler(req, res, next) {
   if (req.query.order_status)
