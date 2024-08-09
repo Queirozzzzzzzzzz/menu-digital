@@ -149,7 +149,9 @@ async function createOrder(values = {}) {
     product_id: values.product_id,
     price: values.price || 47.27,
     table_number: values.table_number || 12,
-    observation: values.observation || null,
+    observation: values.observation,
+    additionalIngredients: values.additionalIngredients,
+    removedIngredients: values.removedIngredients,
   };
 
   let orderObj = await order.create(info);

@@ -18,7 +18,7 @@ exports.up = (pgm) => {
     },
 
     multiplied: {
-      type: "boolean",
+      type: "integer",
       notNull: true,
     },
 

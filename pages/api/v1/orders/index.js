@@ -48,6 +48,8 @@ async function postValidationHandler(req, res, next) {
     price: "required",
     table_number: "required",
     observation: "optional",
+    additional_ingredients: "optional",
+    removed_ingredients: "optional",
   });
 
   req.body = cleanValues;
@@ -56,14 +58,16 @@ async function postValidationHandler(req, res, next) {
 }
 
 async function postHandler(req, res) {
-  let newOrder;
+  let createdOrder;
 
   const transaction = await db.transaction();
 
   try {
     transaction.query("BEGIN");
 
-    newOrder = await order.create(req.body, { transaction });
+    const newOrder = await order.create(req.body, { transaction });
+    await order.setIngredients(newOrder.id, req.body, { transaction });
+    createdOrder = await order.findById(newOrder.id, { transaction });
 
     transaction.query("COMMIT");
   } catch (err) {
@@ -78,6 +82,34 @@ async function postHandler(req, res) {
           "MODEL:ORDER:CHECK_FOR_ORDER_UNIQUENESS:ALREADY_EXISTS",
         statusCode: 400,
         key: "name",
+      });
+    }
+
+    if (
+      err.message ===
+      'insert or update on table "additional_ingredients" violates foreign key constraint "additional_ingredients_ingredient_id_fkey"'
+    ) {
+      throw new NotFoundError({
+        message: `O ingrediente selecionado não foi encontrado.`,
+        action: `Verifique o "ingredient_id" utilizado e tente novamente.`,
+        stack: new Error().stack,
+        errorLocationCode:
+          "MODEL:ORDER:CHECK_FOR_ORDER_INGREDIENT_ID:NOT_FOUND",
+        key: "ingredient_id",
+      });
+    }
+
+    if (
+      err.message ===
+      'insert or update on table "removed_ingredients" violates foreign key constraint "removed_ingredients_ingredient_id_fkey"'
+    ) {
+      throw new NotFoundError({
+        message: `O ingrediente selecionado não foi encontrado.`,
+        action: `Verifique o "ingredient_id" utilizado e tente novamente.`,
+        stack: new Error().stack,
+        errorLocationCode:
+          "MODEL:ORDER:CHECK_FOR_ORDER_INGREDIENT_ID:NOT_FOUND",
+        key: "ingredient_id",
       });
     }
 
@@ -96,5 +128,5 @@ async function postHandler(req, res) {
     transaction.release();
   }
 
-  return res.status(201).json(newOrder);
+  return res.status(201).json(createdOrder);
 }

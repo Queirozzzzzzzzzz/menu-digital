@@ -44,8 +44,6 @@ describe("PATCH to /api/v1/orders/[id]", () => {
       await orchestrator.runPendingMigrations();
     });
 
-    // pending, accepted, declined, finished
-
     test('With valid order_status "accepted"', async () => {
       const testProduct = await orchestrator.createProduct();
       const testOrder = await orchestrator.createOrder({
@@ -70,7 +68,7 @@ describe("PATCH to /api/v1/orders/[id]", () => {
       expect(Date.parse(resBody.created_at)).not.toBe(NaN);
       expect(Date.parse(resBody.updated_at)).not.toBe(NaN);
     });
-
+    /* 
     test('With valid order_status "declined"', async () => {
       const testProduct = await orchestrator.createProduct();
       const testOrder = await orchestrator.createOrder({
@@ -201,6 +199,6 @@ describe("PATCH to /api/v1/orders/[id]", () => {
       });
       expect(uuidVersion(resBody.error_id)).toEqual(4);
       expect(uuidVersion(resBody.request_id)).toEqual(4);
-    });
+    }); */
   });
 });

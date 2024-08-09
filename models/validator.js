@@ -313,4 +313,36 @@ const schemas = {
         }),
     });
   },
+
+  additional_ingredients: function () {
+    return Joi.object({
+      additional_ingredients: Joi.array()
+        .items(
+          Joi.object({
+            ingredient_id: Joi.number().integer().positive().required(),
+            multiplied: Joi.number(),
+            price: Joi.number(),
+          }).when("$required.additional_ingredients", {
+            is: "required",
+            then: Joi.required(),
+            otherwise: Joi.optional(),
+          }),
+        )
+        .min(1),
+    });
+  },
+
+  removed_ingredients: function () {
+    return Joi.object({
+      removed_ingredients: Joi.array()
+        .items(Joi.number().integer().positive())
+        .min(0)
+        .unique()
+        .when("$required.removed_ingredients", {
+          is: "required",
+          then: Joi.required(),
+          otherwise: Joi.optional(),
+        }),
+    });
+  },
 };
