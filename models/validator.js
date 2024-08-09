@@ -320,8 +320,8 @@ const schemas = {
         .items(
           Joi.object({
             ingredient_id: Joi.number().integer().positive().required(),
-            multiplied: Joi.number(),
-            price: Joi.number(),
+            multiplied: Joi.number().integer().positive().required(),
+            price: Joi.number().positive().required(),
           }).when("$required.additional_ingredients", {
             is: "required",
             then: Joi.required(),
