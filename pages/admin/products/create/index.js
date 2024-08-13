@@ -69,9 +69,8 @@ export default function Products() {
         }),
       });
 
-      if (res.status == 201) alert("Produto criado com sucesso");
+      if (res.status == 201) { alert("Produto criado com sucesso"); location.reload() }
 
-      router.push("/admin/products/create");
     } catch (err) {
       console.error("Error submiting form: ", err);
     }
