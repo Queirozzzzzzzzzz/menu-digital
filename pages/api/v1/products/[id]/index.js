@@ -30,6 +30,7 @@ async function patchValidationHandler(req, res, next) {
     category_id: "optional",
     price: "optional",
     picture: "optional",
+    product_status: "optional",
   });
 
   req.body = cleanValues;

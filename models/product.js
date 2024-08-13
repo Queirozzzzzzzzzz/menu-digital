@@ -24,6 +24,7 @@ async function create(values, options = {}) {
 
 async function edit(id, values, options = {}) {
   const oldProduct = await findById(id);
+  if (values.product_status) values.status = values.product_status[0];
   values = { ...oldProduct, ...values };
 
   const query = {
@@ -35,6 +36,7 @@ async function edit(id, values, options = {}) {
       category_id = $4, 
       price = $5, 
       picture = $6,
+      status = $7,
       updated_at = (now() at time zone 'utc')
     WHERE id = $1
     RETURNING *;
@@ -46,6 +48,7 @@ async function edit(id, values, options = {}) {
       values.category_id,
       values.price,
       values.picture,
+      values.status,
     ],
   };
 
@@ -62,17 +65,20 @@ async function listByStatus(status = [], options = {}) {
     COALESCE(
       json_agg(
         json_build_object(
+          'id', i.id,
           'name', i.name,
           'value', i.value,
           'price', i.price
         )
       ) FILTER (WHERE i.id IS NOT NULL),
       '[]'::json
-    ) AS ingredients
+    ) AS ingredients,
+     c.name AS category_name
     FROM products p
     LEFT JOIN ingredients i ON i.id = ANY(p.ingredients_ids)
+    LEFT JOIN categories c ON c.id = p.category_id
     WHERE p.status = ANY($1)
-    GROUP BY p.id;
+    GROUP BY p.id, c.name;
     `,
     values: [status],
   };
@@ -106,17 +112,20 @@ async function findById(id, options = {}) {
       COALESCE(
         json_agg(
           json_build_object(
+            'id', i.id,
             'name', i.name,
             'value', i.value,
             'price', i.price
           )
         ) FILTER (WHERE i.id IS NOT NULL),
         '[]'::json
-      ) AS ingredients
+      ) AS ingredients,
+      c.name AS category_name
     FROM products p
     LEFT JOIN ingredients i ON i.id = ANY(p.ingredients_ids)
+    LEFT JOIN categories c ON c.id = p.category_id
     WHERE p.id = $1
-    GROUP BY p.id;
+    GROUP BY p.id, c.name;
     `,
     values: [id],
   };

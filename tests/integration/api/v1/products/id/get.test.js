@@ -58,6 +58,7 @@ describe("GET to /api/v1/products/[id]", () => {
       expect(resBody.picture).toEqual(testProduct.picture);
       expect(resBody.ingredients).toEqual([
         {
+          id: ingredient.id,
           name: ingredient.name,
           price: parseFloat(ingredient.price),
           value: ingredient.value,

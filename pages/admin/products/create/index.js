@@ -9,7 +9,7 @@ export default function Products() {
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [picture, setPicture] = useState(null);
+  const [pictureUrl, setPictureUrl] = useState(null);
   const [ingredients, setIngredients] = useState([]);
   const [ingredientsOptions, setIngredientsOptions] = useState([]);
   const [selectedIngredient, setSelectedIngredient] = useState(null);
@@ -40,9 +40,9 @@ export default function Products() {
       .catch((error) => console.error("Error fetching ingredients:", error));
   }, []);
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     if (e.target.files.length > 0) {
-      setPicture(e.target.files[0]);
+      setPictureUrl(await uploadImageToImgBB(e.target.files[0]));
     }
   };
 
@@ -50,9 +50,6 @@ export default function Products() {
     e.preventDefault();
 
     try {
-      let pictureUrl = "";
-      if (picture) pictureUrl = await uploadImageToImgBB(picture);
-
       const ingredientsIds = ingredients.map((i) => i.id);
 
       const res = await fetch("/api/v1/products", {
@@ -65,12 +62,14 @@ export default function Products() {
           name: name,
           category_id: selectedCategory.id,
           price: price,
-          picture: pictureUrl || 'http://localhost:3000',
+          picture: pictureUrl || "http://localhost:3000",
         }),
       });
 
-      if (res.status == 201) { alert("Produto criado com sucesso"); location.reload() }
-
+      if (res.status == 201) {
+        alert("Produto criado com sucesso");
+        location.reload();
+      }
     } catch (err) {
       console.error("Error submiting form: ", err);
     }
@@ -113,7 +112,10 @@ export default function Products() {
     const pictureFormData = new FormData();
     pictureFormData.append("image", picture);
     let clientIdRes = await fetch("/api/v1/pictures");
-    if (clientIdRes.status !== 200) { console.error('Error fetching api key from /api/v1/pictures'); return }
+    if (clientIdRes.status !== 200) {
+      console.error("Error fetching api key from /api/v1/pictures");
+      return;
+    }
 
     const apiKey = await clientIdRes.json();
 
@@ -122,13 +124,13 @@ export default function Products() {
       body: pictureFormData,
     });
 
-    const data = await res.json();
+    const resBody = await res.json();
     if (res.ok) {
-      return data.data.url;
+      return resBody.data.url;
     } else {
-      console.error(data.error.message)
-      alert("Falha ao salvar imagem.");
-      return
+      console.error(resBody);
+      alert("Falha ao salvar imagem. Verifique o tamanho/formato.");
+      return;
     }
   }
 
@@ -137,6 +139,7 @@ export default function Products() {
       <h1>Produto</h1>
 
       <form onSubmit={handleSubmit}>
+        <img src={`${pictureUrl}`} />
         <label>
           Imagem:
           <input type="file" onChange={handleFileChange} />

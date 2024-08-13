@@ -110,6 +110,7 @@ describe("PATCH to /api/v1/products/[id]", () => {
         category_id: testCategory.id,
         price: "22.90",
         picture: "https://image_url_path.jpg",
+        product_status: ["missing"],
       };
 
       const { res, resBody } = await reqB.patch(values);
@@ -120,6 +121,7 @@ describe("PATCH to /api/v1/products/[id]", () => {
       expect(resBody.category_id).toEqual(testCategory.id);
       expect(resBody.price).toEqual("22.90");
       expect(resBody.picture).toEqual("https://image_url_path.jpg");
+      expect(resBody.status).toEqual("missing");
     });
 
     test("With unique name", async () => {
