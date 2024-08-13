@@ -26,7 +26,7 @@ export default function Products() {
     fetch("/api/v1/ingredients")
       .then((res) => res.json())
       .then((data) => {
-        setIngredientsOptions(data);
+        setIngredientsOptions(Array.isArray(data) ? data : []);
       })
       .catch((error) => console.error("Error fetching ingredients:", error));
   }, []);
@@ -35,7 +35,7 @@ export default function Products() {
     fetch("/api/v1/categories?category_status=available")
       .then((res) => res.json())
       .then((data) => {
-        setCategoriesOptions(data);
+        setCategoriesOptions(Array.isArray(data) ? data : []);
       })
       .catch((error) => console.error("Error fetching ingredients:", error));
   }, []);
@@ -68,8 +68,6 @@ export default function Products() {
           picture: pictureUrl,
         }),
       });
-
-      const resBody = await res.json();
 
       if (res.status == 201) alert("Produto criado com sucesso");
 

@@ -22,5 +22,5 @@ export default nextConnect({
   );
 
 async function getHandler(req, res) {
-  return res.status(200).json(process.env.IMGUR_CLIENT_ID);
+  return res.status(200).json(process.env.IMGBB_API_KEY);
 }
