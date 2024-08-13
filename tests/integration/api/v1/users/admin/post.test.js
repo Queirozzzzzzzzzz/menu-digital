@@ -22,7 +22,7 @@ describe("POST to /api/v1/users/admin", () => {
         resBody.password,
       );
       expect(validPasswordsMatch).toBe(true);
-      expect(resBody.features).toEqual([]);
+      expect(resBody.features).toEqual(["admin"]);
     });
   });
 });

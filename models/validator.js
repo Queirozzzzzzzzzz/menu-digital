@@ -188,6 +188,21 @@ const schemas = {
     });
   },
 
+  features: function () {
+    return Joi.object({
+      features: Joi.array().items(
+        Joi.string()
+          .valid("admin")
+          .min(0)
+          .when("$required.features", {
+            is: "required",
+            then: Joi.required(),
+            otherwise: Joi.optional(),
+          }),
+      ),
+    });
+  },
+
   price: function () {
     return Joi.object({
       price: Joi.number()

@@ -25,9 +25,11 @@ async function postValidationHandler(req, res, next) {
   const values = {
     username: process.env.ADMIN_USERNAME,
     password: process.env.ADMIN_PASSWORD,
+    features: ["admin"]
   };
 
   const cleanValues = validator(values, {
+    features: "optional",
     username: "required",
     password: "required",
   });

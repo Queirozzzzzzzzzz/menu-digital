@@ -109,6 +109,7 @@ async function addFeatures(id, features, options) {
 // Private functions
 function validatePostSchema(postedUserData) {
   const cleanValues = validator(postedUserData, {
+    features: "optional",
     username: "required",
     password: "required",
   });
