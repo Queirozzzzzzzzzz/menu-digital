@@ -6,7 +6,6 @@ import category from "models/category";
 import authorization from "models/authorization";
 import authentication from "models/authentication";
 import db from "infra/database";
-import { ValidationError } from "errors";
 
 export default nextConnect({
   attachParams: true,

@@ -1,6 +1,6 @@
 import nextConnect from "next-connect";
 
-import { NotFoundError, ValidationError } from "errors";
+import { ValidationError } from "errors";
 import controller from "models/controller";
 import validator from "models/validator";
 import authorization from "models/authorization";
