@@ -10,7 +10,6 @@ import session from "models/session";
 import product from "models/product";
 import ingredient from "models/ingredient";
 import order from "models/order";
-import category from "models/category";
 
 if (process.env.NODE_ENV !== "test") {
   throw new Error({
@@ -112,12 +111,10 @@ async function addFeaturesToUser(userObj, features) {
 }
 
 async function createProduct(values = {}) {
-  await createCategory();
-
   const info = {
     ingredients_ids: values.ingredients_ids || [],
     name: values.name || getFakeName(),
-    category_id: values.category_id || 1,
+    category: values.category || "coffees",
     price: values.price || "1.90",
     picture: values.picture || "https://url_path.jpg",
   };
@@ -166,16 +163,6 @@ async function setOrderStatus(id, status = []) {
   return await order.setStatus(id, status);
 }
 
-async function createCategory(name) {
-  if (!name) name = getFakeName();
-
-  return await category.create(name);
-}
-
-async function setCategoryStatus(id, status = []) {
-  return await category.setStatus(id, status);
-}
-
 // Functions
 
 const usedFakeNames = new Set();
@@ -216,8 +203,6 @@ const orchestrator = {
   setProductStatus,
   createIngredient,
   createOrder,
-  createCategory,
-  setCategoryStatus,
 };
 
 export default orchestrator;

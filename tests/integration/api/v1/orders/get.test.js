@@ -35,7 +35,6 @@ describe("GET to /api/v1/orders", () => {
       await orchestrator.dropAllTables();
       await orchestrator.runPendingMigrations();
 
-      await orchestrator.createCategory();
       const product = await orchestrator.createProduct();
       const statuses = ["pending", "accepted", "declined", "finished"];
       await Promise.all(

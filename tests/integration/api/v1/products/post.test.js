@@ -15,12 +15,11 @@ describe("POST to /api/v1/products", () => {
       const reqB = new RequestBuilder("/api/v1/products");
       const ingredient1 = await orchestrator.createIngredient();
       const ingredient2 = await orchestrator.createIngredient();
-      const testCategory = await orchestrator.createCategory();
 
       const values = {
         ingredients_ids: [ingredient1.id, ingredient2.id],
         name: "Product name",
-        category_id: testCategory.id,
+        category: "coffees",
         price: "22.90",
         picture: "https://image_url_path.jpg",
       };
@@ -51,12 +50,11 @@ describe("POST to /api/v1/products", () => {
       await reqB.buildAdmin();
       const ingredient1 = await orchestrator.createIngredient();
       const ingredient2 = await orchestrator.createIngredient();
-      const testCategory = await orchestrator.createCategory();
 
       const values = {
         ingredients_ids: [ingredient1.id, ingredient2.id],
         name: "Product name",
-        category_id: testCategory.id,
+        category: "coffees",
         price: "22.90",
         picture: "https://image_url_path.jpg",
       };
@@ -66,7 +64,7 @@ describe("POST to /api/v1/products", () => {
       expect(res.status).toBe(201);
       expect(resBody.ingredients_ids).toEqual([1, 2]);
       expect(resBody.name).toEqual("Product name");
-      expect(resBody.category_id).toEqual(testCategory.id);
+      expect(resBody.category).toEqual("coffees");
       expect(resBody.price).toEqual("22.90");
       expect(resBody.picture).toEqual("https://image_url_path.jpg");
     });
@@ -74,11 +72,10 @@ describe("POST to /api/v1/products", () => {
     test("With unique name, valid data and without ingredients_ids", async () => {
       const reqB = new RequestBuilder("/api/v1/products");
       await reqB.buildAdmin();
-      const testCategory = await orchestrator.createCategory();
 
       const values = {
         name: "Product name",
-        category_id: testCategory.id,
+        category: "coffees",
         price: "22.90",
         picture: "https://image_url_path.jpg",
       };
@@ -88,7 +85,7 @@ describe("POST to /api/v1/products", () => {
       expect(res.status).toBe(201);
       expect(resBody.ingredients_ids).toEqual(null);
       expect(resBody.name).toEqual("Product name");
-      expect(resBody.category_id).toEqual(testCategory.id);
+      expect(resBody.category).toEqual("coffees");
       expect(resBody.price).toEqual("22.90");
       expect(resBody.picture).toEqual("https://image_url_path.jpg");
     });
@@ -98,12 +95,11 @@ describe("POST to /api/v1/products", () => {
       await reqB.buildAdmin();
       const ingredient1 = await orchestrator.createIngredient();
       const ingredient2 = await orchestrator.createIngredient();
-      const testCategory = await orchestrator.createCategory();
 
       const values = {
         ingredients_ids: [ingredient1.id, ingredient2.id],
         name: "Product name",
-        category_id: testCategory.id,
+        category: "coffees",
         price: "22.90",
         picture: "https://image_url_path.jpg",
       };
@@ -113,7 +109,7 @@ describe("POST to /api/v1/products", () => {
       expect(res1.status).toBe(201);
       expect(resBody1.ingredients_ids).toEqual([1, 2]);
       expect(resBody1.name).toEqual("Product name");
-      expect(resBody1.category_id).toEqual(1);
+      expect(resBody1.category).toEqual("coffees");
       expect(resBody1.price).toEqual("22.90");
       expect(resBody1.picture).toEqual("https://image_url_path.jpg");
 
@@ -137,12 +133,11 @@ describe("POST to /api/v1/products", () => {
       await reqB.buildAdmin();
       const ingredient1 = await orchestrator.createIngredient();
       const ingredient2 = await orchestrator.createIngredient();
-      const testCategory = await orchestrator.createCategory();
 
       const values = {
         ingredients_ids: [ingredient1.id, ingredient2.id],
         name: "Product name",
-        category_id: testCategory.id,
+        category: "coffees",
         price: "22.90",
       };
 
@@ -161,7 +156,7 @@ describe("POST to /api/v1/products", () => {
       expect(resBody.key).toBe("picture");
     });
 
-    test("With unique name but invalid category_id", async () => {
+    test("With unique name but invalid category", async () => {
       const reqB = new RequestBuilder("/api/v1/products");
       await reqB.buildAdmin();
       const ingredient1 = await orchestrator.createIngredient();
@@ -170,7 +165,7 @@ describe("POST to /api/v1/products", () => {
       const values = {
         ingredients_ids: [ingredient1.id, ingredient2.id],
         name: "Product name",
-        category_id: "invalid",
+        category: "invalid",
         price: "22.90",
         picture: "https://image_url_path.jpg",
       };
@@ -179,7 +174,9 @@ describe("POST to /api/v1/products", () => {
 
       expect(res.status).toBe(400);
       expect(resBody.name).toBe("ValidationError");
-      expect(resBody.message).toBe('"category_id" deve ser do tipo Number.');
+      expect(resBody.message).toBe(
+        '"category" deve possuir um dos seguintes valores: "coffees", "sweets", "snacks", "teas".',
+      );
       expect(resBody.action).toBe(
         "Ajuste os dados enviados e tente novamente.",
       );
@@ -187,7 +184,7 @@ describe("POST to /api/v1/products", () => {
       expect(uuidVersion(resBody.error_id)).toEqual(4);
       expect(uuidVersion(resBody.request_id)).toEqual(4);
       expect(resBody.error_location_code).toBe("MODEL:VALIDATOR:FINAL_SCHEMA");
-      expect(resBody.key).toBe("category_id");
+      expect(resBody.key).toBe("category");
     });
   });
 });

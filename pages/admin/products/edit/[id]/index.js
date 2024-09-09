@@ -66,7 +66,7 @@ export default function Products() {
           );
           return [...prev, ...newIngredients];
         });
-        setSelectedCategory({ id: data.category_id });
+        setSelectedCategory({ id: data.category });
         setProductStatus(data.status || "available");
       })
       .catch((error) => console.error("Error fetching ingredients:", error));
@@ -92,7 +92,7 @@ export default function Products() {
         body: JSON.stringify({
           ingredients_ids: ingredientsIds,
           name: name,
-          category_id: selectedCategory.id,
+          category: selectedCategory.id,
           price: price,
           picture: pictureUrl,
           product_status: [productStatus],

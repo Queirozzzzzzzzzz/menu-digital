@@ -163,13 +163,16 @@ const schemas = {
     });
   },
 
-  category_id: function () {
+  category: function () {
     return Joi.object({
-      category_id: Joi.number().integer().when("$required.category_id", {
-        is: "required",
-        then: Joi.required(),
-        otherwise: Joi.optional(),
-      }),
+      category: Joi.string()
+        .valid("coffees", "sweets", "snacks", "teas")
+        .min(0)
+        .when("$required.category", {
+          is: "required",
+          then: Joi.required(),
+          otherwise: Joi.optional(),
+        }),
     });
   },
 

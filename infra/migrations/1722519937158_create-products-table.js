@@ -27,6 +27,12 @@ exports.up = (pgm) => {
       notNull: true,
     },
 
+    category: {
+      type: "varchar(10)",
+      notNull: true,
+      check: "category IN ('coffees', 'sweets', 'snacks', 'teas')",
+    },
+
     picture: {
       type: "varchar(255)",
     },

@@ -4,12 +4,12 @@ import db from "infra/database";
 async function create(values, options = {}) {
   const query = {
     text: `
-    INSERT INTO products (category_id, ingredients_ids, name, price, picture)
+    INSERT INTO products (category, ingredients_ids, name, price, picture)
     VALUES ($1, $2, $3, $4, $5)
     RETURNING *;
     `,
     values: [
-      values.category_id,
+      values.category,
       values.ingredients_ids,
       values.name,
       values.price,
@@ -33,7 +33,7 @@ async function edit(id, values, options = {}) {
     SET 
       ingredients_ids = $2, 
       name = $3, 
-      category_id = $4, 
+      category = $4, 
       price = $5, 
       picture = $6,
       status = $7,
@@ -45,7 +45,7 @@ async function edit(id, values, options = {}) {
       id,
       values.ingredients_ids,
       values.name,
-      values.category_id,
+      values.category,
       values.price,
       values.picture,
       values.status,
@@ -72,13 +72,11 @@ async function listByStatus(status = [], options = {}) {
         )
       ) FILTER (WHERE i.id IS NOT NULL),
       '[]'::json
-    ) AS ingredients,
-     c.name AS category_name
+    ) AS ingredients
     FROM products p
     LEFT JOIN ingredients i ON i.id = ANY(p.ingredients_ids)
-    LEFT JOIN categories c ON c.id = p.category_id
     WHERE p.status = ANY($1)
-    GROUP BY p.id, c.name;
+    GROUP BY p.id;
     `,
     values: [status],
   };
@@ -119,13 +117,11 @@ async function findById(id, options = {}) {
           )
         ) FILTER (WHERE i.id IS NOT NULL),
         '[]'::json
-      ) AS ingredients,
-      c.name AS category_name
+      ) AS ingredients
     FROM products p
     LEFT JOIN ingredients i ON i.id = ANY(p.ingredients_ids)
-    LEFT JOIN categories c ON c.id = p.category_id
     WHERE p.id = $1
-    GROUP BY p.id, c.name;
+    GROUP BY p.id;
     `,
     values: [id],
   };

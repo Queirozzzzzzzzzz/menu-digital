@@ -60,7 +60,7 @@ export default function Products() {
         body: JSON.stringify({
           ingredients_ids: ingredientsIds,
           name: name,
-          category_id: selectedCategory.id,
+          category: selectedCategory.id,
           price: price,
           picture: pictureUrl || "http://localhost:3000",
         }),
