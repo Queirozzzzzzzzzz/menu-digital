@@ -13,7 +13,12 @@ export default function Products() {
   const [ingredients, setIngredients] = useState([]);
   const [ingredientsOptions, setIngredientsOptions] = useState([]);
   const [selectedIngredient, setSelectedIngredient] = useState(null);
-  const [categoriesOptions, setCategoriesOptions] = useState([]);
+  const [categoriesOptions, setCategoriesOptions] = useState([
+    "coffees",
+    "sweets",
+    "snacks",
+    "teas",
+  ]);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   useEffect(() => {
@@ -27,15 +32,6 @@ export default function Products() {
       .then((res) => res.json())
       .then((data) => {
         setIngredientsOptions(Array.isArray(data) ? data : []);
-      })
-      .catch((error) => console.error("Error fetching ingredients:", error));
-  }, []);
-
-  useEffect(() => {
-    fetch("/api/v1/categories?category_status=available")
-      .then((res) => res.json())
-      .then((data) => {
-        setCategoriesOptions(Array.isArray(data) ? data : []);
       })
       .catch((error) => console.error("Error fetching ingredients:", error));
   }, []);

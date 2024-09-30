@@ -14,7 +14,7 @@ describe("GET to /api/v1/products", () => {
   describe("No user", () => {
     test("With 1 valid product_status array", async () => {
       const reqB = new RequestBuilder(
-        `/api/v1/products?product_status=available`,
+        `/api/v1/products?category=coffees&product_status=available`,
       );
       const ingredient1 = await orchestrator.createIngredient();
       const ingredient2 = await orchestrator.createIngredient();
@@ -40,7 +40,7 @@ describe("GET to /api/v1/products", () => {
 
     test("With 2 valid product_status array", async () => {
       const reqB = new RequestBuilder(
-        `/api/v1/products?product_status=available,missing`,
+        `/api/v1/products?category=coffees&product_status=available,missing`,
       );
 
       const { res, resBody } = await reqB.get();
@@ -51,7 +51,7 @@ describe("GET to /api/v1/products", () => {
 
     test("With 3 valid product_status array", async () => {
       const reqB = new RequestBuilder(
-        `/api/v1/products?product_status=available,missing,disabled`,
+        `/api/v1/products?category=coffees&product_status=available,missing,disabled`,
       );
 
       const { res, resBody } = await reqB.get();
@@ -62,7 +62,7 @@ describe("GET to /api/v1/products", () => {
 
     test("With an invalid product_status array", async () => {
       const reqB = new RequestBuilder(
-        `/api/v1/products?product_status=invalid`,
+        `/api/v1/products?category=coffees&product_status=invalid`,
       );
 
       const { res, resBody } = await reqB.get();
@@ -86,14 +86,14 @@ describe("GET to /api/v1/products", () => {
     });
 
     test("With a blank product_status array", async () => {
-      const reqB = new RequestBuilder(`/api/v1/products`);
+      const reqB = new RequestBuilder(`/api/v1/products?category=coffees`);
 
       const { res, resBody } = await reqB.get();
 
       expect(res.status).toBe(400);
       expect(resBody.name).toEqual("ValidationError");
       expect(resBody.message).toEqual(
-        "Objeto enviado deve ter no mínimo uma chave.",
+        '"product_status" é um campo obrigatório.',
       );
       expect(resBody.action).toEqual(
         "Ajuste os dados enviados e tente novamente.",
@@ -104,8 +104,8 @@ describe("GET to /api/v1/products", () => {
       expect(resBody.error_location_code).toEqual(
         "MODEL:VALIDATOR:FINAL_SCHEMA",
       );
-      expect(resBody.key).toEqual("object");
-      expect(resBody.type).toEqual("object.min");
+      expect(resBody.key).toEqual("product_status");
+      expect(resBody.type).toEqual("any.required");
     });
   });
 });

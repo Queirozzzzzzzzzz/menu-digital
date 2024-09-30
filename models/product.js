@@ -57,7 +57,7 @@ async function edit(id, values, options = {}) {
   return res.rows[0];
 }
 
-async function listByStatus(status = [], options = {}) {
+async function listByCategoryAndStatus(category, status = [], options = {}) {
   const query = {
     text: `
     SELECT 
@@ -75,10 +75,11 @@ async function listByStatus(status = [], options = {}) {
     ) AS ingredients
     FROM products p
     LEFT JOIN ingredients i ON i.id = ANY(p.ingredients_ids)
-    WHERE p.status = ANY($1)
+    WHERE category = $1
+    AND p.status = ANY($2)
     GROUP BY p.id;
     `,
-    values: [status],
+    values: [category, status],
   };
 
   const res = await db.query(query, options);
@@ -142,7 +143,7 @@ async function findById(id, options = {}) {
 const product = {
   create,
   edit,
-  listByStatus,
+  listByCategoryAndStatus,
   setStatus,
   findById,
 };

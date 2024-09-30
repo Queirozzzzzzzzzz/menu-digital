@@ -77,6 +77,7 @@ async function getValidationHandler(req, res, next) {
 
   const cleanValues = validator(req.query, {
     product_status: "required",
+    category: "required",
   });
 
   req.body = cleanValues;
@@ -85,7 +86,10 @@ async function getValidationHandler(req, res, next) {
 }
 
 async function getHandler(req, res) {
-  const products = await product.listByStatus(req.query.product_status);
+  const products = await product.listByCategoryAndStatus(
+    req.query.category,
+    req.query.product_status,
+  );
 
   return res.status(200).json(products);
 }
