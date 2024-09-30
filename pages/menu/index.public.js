@@ -41,9 +41,6 @@ export default function Menu() {
           </h1>
           <div className="home-btn-container">
             <button className="btn cart-btn">Adicionar ao Carrinho</button>
-            <button className="btn info-btn" id="open-modal">
-              Mais Informações
-            </button>
           </div>
         </div>
       </div>

@@ -13,12 +13,7 @@ export default function Products() {
   const [ingredients, setIngredients] = useState([]);
   const [ingredientsOptions, setIngredientsOptions] = useState([]);
   const [selectedIngredient, setSelectedIngredient] = useState(null);
-  const [categoriesOptions, setCategoriesOptions] = useState([
-    "coffees",
-    "sweets",
-    "snacks",
-    "teas",
-  ]);
+  const categories = ["coffees", "sweets", "snacks", "teas"];
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   useEffect(() => {
@@ -56,7 +51,7 @@ export default function Products() {
         body: JSON.stringify({
           ingredients_ids: ingredientsIds,
           name: name,
-          category: selectedCategory.id,
+          category: selectedCategory,
           price: price,
           picture: pictureUrl || "http://localhost:3000",
         }),
@@ -72,10 +67,7 @@ export default function Products() {
   };
 
   const handleCategoryChange = (e) => {
-    const selectedOption = {
-      id: parseInt(e.target.value),
-    };
-    setSelectedCategory(selectedOption);
+    setSelectedCategory(e.target.value);
   };
 
   const handleIngredientChange = (e) => {
@@ -161,18 +153,19 @@ export default function Products() {
           />
         </label>
         <br />
+
         <label>
           Categoria:
           <select
-            value={selectedCategory?.id || ""}
+            value={selectedCategory || ""}
             onChange={handleCategoryChange}
           >
             <option value="" disabled>
               Selecione a categoria
             </option>
-            {categoriesOptions.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.name}
+            {categories.map((option) => (
+              <option key={option} value={option}>
+                {option}
               </option>
             ))}
           </select>
