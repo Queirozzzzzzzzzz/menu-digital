@@ -60,7 +60,7 @@ export default function Category() {
                     .map((ingredient) => ingredient.name)
                     .join(", ")}
                 </p>
-                <div className="btn">Adicionar ao Carrinho</div>
+                <button className="btn">Adicionar ao Carrinho</button>
               </div>
             </div>
           </div>
