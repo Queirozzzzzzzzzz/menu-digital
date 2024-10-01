@@ -41,6 +41,30 @@ export default function Category() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
+  const handleProductAdd = (productId) => {
+    try {
+      let selectedProducts =
+        JSON.parse(localStorage.getItem("selected_products_ids")) || [];
+
+      if (!selectedProducts.some((id) => id === productId)) {
+        selectedProducts.push(productId);
+
+        selectedProducts.sort((a, b) => a - b);
+
+        localStorage.setItem(
+          "selected_products_ids",
+          JSON.stringify(selectedProducts),
+        );
+      }
+    } catch (error) {
+      console.error("Error handling product addition:", error);
+
+      localStorage.setItem(
+        "selected_products_ids",
+        JSON.stringify([productId]),
+      );
+    }
+  };
 
   return (
     <>
@@ -64,19 +88,47 @@ export default function Category() {
             className={`${index % 2 === 0 ? "card-1" : "card-2"}`}
             key={product.id}
           >
-            <div className="home-container-sale">
-              <div className="info">
-                <h1 className="title">{product.name}</h1>
-                <p className="text">
-                  Preço: {product.price} <br />
-                  Ingredientes:{" "}
-                  {product.ingredients
-                    .map((ingredient) => ingredient.name)
-                    .join(", ")}
-                </p>
-                <button className="btn">Adicionar ao Carrinho</button>
-              </div>
-            </div>
+            {index % 2 === 0 ? (
+              <>
+                <img src={product.picture} />
+                <div className="info">
+                  <h1 className="title">{product.name}</h1>
+                  <p className="text">
+                    Preço: {product.price} <br />
+                    Ingredientes:{" "}
+                    {product.ingredients
+                      .map((ingredient) => ingredient.name)
+                      .join(", ")}
+                  </p>
+                  <button
+                    className="btn"
+                    onClick={() => handleProductAdd(product.id)}
+                  >
+                    Adicionar ao Carrinho
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="info">
+                  <h1 className="title">{product.name}</h1>
+                  <p className="text">
+                    Preço: {product.price} <br />
+                    Ingredientes:{" "}
+                    {product.ingredients
+                      .map((ingredient) => ingredient.name)
+                      .join(", ")}
+                  </p>
+                  <button
+                    className="btn"
+                    onClick={() => handleProductAdd(product.id)}
+                  >
+                    Adicionar ao Carrinho
+                  </button>
+                </div>
+                <img src={product.picture} />
+              </>
+            )}
           </div>
         ))}
       </section>
