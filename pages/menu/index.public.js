@@ -34,16 +34,31 @@ export default function Menu() {
 
   return (
     <>
-      <div className="home-container-sale">
+      <header className="user-header">
+        <div className="home-icon">
+          <a href="/menu" rel="noopener noreferrer">
+            <img src="/static/svg/home.svg" alt="home"></img>
+          </a>
+        </div>
+
+        <div className="cart-icon">
+          <a href="/cart" rel="noopener noreferrer">
+            <img src="/static/svg/cart.svg" alt="cart"></img>
+          </a>
+        </div>
+      </header>
+
+      <div className="menu-container-carousel">
         <div className="content-container">
           <h1 className="text-container">
             CAFÉ GELADO <br /> R$ 74,00
           </h1>
-          <div className="home-btn-container">
+          <div className="btn-container">
             <button className="btn cart-btn">Adicionar ao Carrinho</button>
           </div>
         </div>
       </div>
+      
       <ul className="menu-navigation">
         {menuItems.map((item, index) => (
           <a key={index} href={item.url} className="item">
