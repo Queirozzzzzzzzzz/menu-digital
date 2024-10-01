@@ -13,6 +13,20 @@ export default function Category() {
 
   return (
     <>
+      <header className="user-header">
+        <div className="home-icon">
+          <a href="/menu" rel="noopener noreferrer">
+            <img id="home-icon-img" src="/static/svg/home.svg" alt="home"></img>
+          </a>
+        </div>
+
+        <div className="cart-icon">
+          <a href="/cart" rel="noopener noreferrer">
+            <img src="/static/svg/cart.svg" alt="cart"></img>
+          </a>
+        </div>
+      </header>
+
       <h1>Carrinho</h1>
     </>
   );
