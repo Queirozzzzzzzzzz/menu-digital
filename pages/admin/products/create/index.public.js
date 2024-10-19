@@ -114,6 +114,7 @@ export default function Products() {
 
     const resBody = await res.json();
     if (res.ok) {
+      alert("Imagem carregou com sucesso.");
       return resBody.data.url;
     } else {
       console.error(resBody);

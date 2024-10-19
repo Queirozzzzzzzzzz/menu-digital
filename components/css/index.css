@@ -23,6 +23,17 @@
 body {
   background-color: var(--primary-color);
   color: var(--text-color);
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+button {
+  padding: 10px 20px;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 button {
@@ -35,6 +46,36 @@ button {
 }
 
 header.user-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  background-color: var(--primary-color);
+}
+
+header .home-icon,
+header .cart-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+header .home-icon img,
+header .cart-icon img {
+  cursor: pointer;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+#home-icon-img {
+  width: 35px;
+  height: 35px;
+}
+
+.menu-container-carousel {
+  text-align: center;
+  background-color: var(--transparent-black);
+  color: var(--text-color);
+}
   display: flex;
   justify-content: space-between;
   padding: 15px;
