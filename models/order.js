@@ -4,11 +4,12 @@ import db from "infra/database";
 async function create(values, options = {}) {
   const orderQuery = {
     text: `
-    INSERT INTO orders (product_id, price, table_number, observation)
-    VALUES ($1, $2, $3, $4)
+    INSERT INTO orders (order_id, product_id, price, table_number, observation)
+    VALUES ($1, $2, $3, $4, $5)
     RETURNING *;
     `,
     values: [
+      values.order_id,
       values.product_id,
       values.price,
       values.table_number,

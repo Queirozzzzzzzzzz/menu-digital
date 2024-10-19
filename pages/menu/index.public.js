@@ -37,7 +37,7 @@ export default function Menu() {
       <header className="user-header">
         <div className="home-icon">
           <a href="/menu" rel="noopener noreferrer">
-            <img src="/static/svg/home.svg" alt="home"></img>
+            <img id="home-icon-img" src="/static/svg/home.svg" alt="home"></img>
           </a>
         </div>
 
@@ -58,7 +58,7 @@ export default function Menu() {
           </div>
         </div>
       </div>
-      
+
       <ul className="menu-navigation">
         {menuItems.map((item, index) => (
           <a key={index} href={item.url} className="item">

@@ -39,30 +39,96 @@ export default function Category() {
   }, [router.query.category]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Carregando...</div>;
   }
+
+  const handleProductAdd = (productId) => {
+    try {
+      let selectedProducts =
+        JSON.parse(localStorage.getItem("selected_products_ids")) || [];
+
+      selectedProducts.push(productId);
+
+      localStorage.setItem(
+        "selected_products_ids",
+        JSON.stringify(selectedProducts),
+      );
+    } catch (error) {
+      console.error("Error handling product addition:", error);
+
+      localStorage.setItem(
+        "selected_products_ids",
+        JSON.stringify([productId]),
+      );
+    }
+  };
 
   return (
     <>
+      <header className="user-header">
+        <div className="home-icon">
+          <a href="/menu" rel="noopener noreferrer">
+            <img id="home-icon-img" src="/static/svg/home.svg" alt="home"></img>
+          </a>
+        </div>
+
+        <div className="cart-icon">
+          <a href="/cart" rel="noopener noreferrer">
+            <img src="/static/svg/cart.svg" alt="cart"></img>
+          </a>
+        </div>
+      </header>
+
       <section className="home" id="home">
+        <h1 className="title">Produtos</h1>
         {products.map((product, index) => (
           <div
             className={`${index % 2 === 0 ? "card-1" : "card-2"}`}
             key={product.id}
           >
-            <div className="home-container-sale">
-              <div className="info">
-                <h1 className="title">{product.name}</h1>
-                <p className="text">
-                  Preço: {product.price} <br />
-                  Ingredientes:{" "}
-                  {product.ingredients
-                    .map((ingredient) => ingredient.name)
-                    .join(", ")}
-                </p>
-                <button className="btn">Adicionar ao Carrinho</button>
-              </div>
-            </div>
+            {index % 2 === 0 ? (
+              <>
+                <img src={product.picture} />
+                <div className="info">
+                  <h1 className="title">{product.name}</h1>
+                  <p className="text">
+                    Preço: {product.price} <br />
+                    Ingredientes:{" "}
+                    {product.ingredients
+                      .map((ingredient) => ingredient.name)
+                      .join(", ")}
+                  </p>
+                  <button
+                    className="btn"
+                    onClick={() => handleProductAdd(product.id)}
+                    disabled={product.status != "available"}
+                  >
+                    Adicionar
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="info">
+                  <h1 className="title">{product.name}</h1>
+                  <p className="text">
+                    Preço: {product.price} <br />
+                    Ingredientes:{" "}
+                    {product.ingredients
+                      .map((ingredient) => ingredient.name)
+                      .join(", ")}
+                  </p>
+                  <button
+                    className="btn"
+                    onClick={() => handleProductAdd(product.id)}
+                    disabled={product.status != "available"}
+                  >
+                    Adicionar
+                  </button>
+                </div>
+                <img src={product.picture} />
+              </>
+            )}
           </div>
         ))}
       </section>

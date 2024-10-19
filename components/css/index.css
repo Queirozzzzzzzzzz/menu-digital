@@ -6,6 +6,7 @@
   --transparent-black: #0000002f;
   --secondary-color: #caba9c;
   --text-color: whitesmoke;
+  --red-color: rgb(165, 0, 0);
 }
 
 * {
@@ -20,90 +21,277 @@
 }
 
 body {
-    background-color: var(--primary-color);
-    color: var(--text-color);
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+button {
+  padding: 10px 20px;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 header.user-header {
-    display: flex;
-    justify-content: space-between;
-    padding: 15px;
-    background-color: var(--primary-color);
-  }
-  
-  header .home-icon img,
-  header .cart-icon img {
-    cursor: pointer;
-    width: 2.5rem;
-    height: 2.5rem;
-  }
-  
-  .menu-container-carousel {
-    text-align: center;
-    background-color: var(--transparent-black);
-    color: var(--text-color);
-  }
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  background-color: var(--primary-color);
+}
 
-  .menu-container-carousel .content-container {
-    background-image: url('/static/img/menu-highlight.webp');
-    background-size: cover;
-    height: 25vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .menu-container-carousel .content-container h1 {
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-  }
-  
-  .menu-container-carousel .btn-container {
-  }
-  
-  .menu-container-carousel .btn {
-    padding: 10px 20px;
-    background-color: var(--secondary-color);
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .menu-container-carousel .btn:hover {
-    background-color: var(--secondary-color);
-  }
-  
-  ul.menu-navigation {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-    margin-top: 30px;
-  }
-  
-  ul.menu-navigation .item {
-    display: flex;
-    align-items: center;
-    margin: 10px 20px;
-    border-radius: 10px;
-    text-decoration: none;
-    color: var(--text-color);
-    background-color: var(--transparent-black);
-  }
-  
-  ul.menu-navigation .item-img {
-    width: 75px;
-    height: 75px;
-    border-radius: 10px;
-    margin-right: 15px;
-  }
-  
-  ul.menu-navigation .item-content {
-    font-size: 2rem;
-    font-weight: bold;
-  }
+header .home-icon,
+header .cart-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  
+header .home-icon img,
+header .cart-icon img {
+  cursor: pointer;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+#home-icon-img {
+  width: 35px;
+  height: 35px;
+}
+
+.menu-container-carousel {
+  text-align: center;
+  background-color: var(--transparent-black);
+  color: var(--text-color);
+}
+
+.menu-container-carousel .content-container {
+  background-image: url("/static/img/menu-highlight.webp");
+  background-size: cover;
+  height: 25vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-container-carousel .content-container h1 {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.menu-container-carousel .btn {
+  padding: 10px 20px;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.menu-container-carousel .btn:hover {
+  background-color: var(--secondary-color);
+}
+
+ul.menu-navigation {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin-top: 30px;
+}
+
+ul.menu-navigation .item {
+  display: flex;
+  align-items: center;
+  margin: 10px 20px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text-color);
+  background-color: var(--transparent-black);
+}
+
+ul.menu-navigation .item-img {
+  width: 75px;
+  height: 75px;
+  border-radius: 10px;
+  margin-right: 15px;
+}
+
+ul.menu-navigation .item-content {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.card-1,
+.card-2 {
+  border-radius: 10px;
+  width: 90%;
+  margin: 15px 0;
+  padding: 15px;
+  display: flex;
+  align-items: start;
+}
+
+.card-2 {
+  padding: 15px 15px 15px 0;
+}
+
+.card-1 img,
+.card-2 img {
+  width: 10rem;
+  height: 15rem;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-right: 20px;
+}
+
+.card-1 {
+  margin-right: 30px;
+}
+
+.card-2 .info {
+  margin-right: 20px;
+}
+
+.home-container-sale {
+  display: flex;
+  flex-direction: row;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.info .title {
+  font-size: 24px;
+  color: var(--secondary-color);
+  font-weight: bold;
+}
+
+.info .text {
+  font-size: 16px;
+  margin: 10px 0;
+  color: var(--text-color);
+}
+
+.info .btn {
+  width: 35vw;
+}
+
+.out-of-stock {
+  background-color: var(--out-of-stock-color);
+  cursor: not-allowed;
+}
+
+.out-of-stock:hover {
+  background-color: var(--out-of-stock-color);
+}
+
+.title {
+  color: var(--secondary-color);
+  font-size: 2.5rem;
+  text-align: center;
+}
+
+.cart-item {
+  display: flex;
+  padding: 1rem;
+}
+
+.cart-item .product-image img {
+  width: 10rem;
+  height: 15rem;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.cart-item .cart-item-content {
+  padding: 0 1rem 1rem 1rem;
+  width: 50vw;
+}
+
+.remove-product-button {
+  background-color: var(--red-color);
+  height: 1rem;
+  padding: 0 0.5rem 1.1rem 0.5rem;
+}
+
+.observation-button {
+  height: 1rem;
+  padding: 0 0.5rem 1.1rem 0.5rem;
+}
+
+.cart-item .ingredient {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cart-item .ingredient .value-multiplier input {
+  width: 2rem;
+  border-radius: 0.25rem;
+  border: none;
+  outline: none;
+  text-align: center;
+  pointer-events: none;
+}
+
+.cart-item .ingredient .value-multiplier button {
+  padding: 0;
+  width: 1.5rem;
+  margin-left: 0.25rem;
+}
+
+.custom-checkbox {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.custom-checkbox input {
+  display: none;
+}
+
+.checkmark {
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: var(--text-color);
+  border-radius: 4px;
+  position: relative;
+  transition:
+    background-color 0.3s,
+    border-color 0.3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.custom-checkbox input:checked + .checkmark {
+  background-color: var(--secondary-color);
+}
+
+.checkmark img {
+  display: none;
+  width: 1.55rem;
+  margin-right: 2px;
+  height: auto;
+}
+
+.custom-checkbox input:checked + .checkmark img {
+  display: block;
+}
+
+.summary {
+  padding: 1rem;
+}

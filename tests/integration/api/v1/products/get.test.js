@@ -17,7 +17,10 @@ describe("GET to /api/v1/products", () => {
         `/api/v1/products?category=coffees&product_status=available`,
       );
       const ingredient1 = await orchestrator.createIngredient();
-      const ingredient2 = await orchestrator.createIngredient();
+      const ingredient2 = await orchestrator.createIngredient({
+        price: 1.99,
+        value: 16,
+      });
 
       const statuses = ["available", "missing", "disabled"];
       await Promise.all(

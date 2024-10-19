@@ -5,6 +5,11 @@ exports.up = (pgm) => {
       primaryKey: true,
     },
 
+    order_id: {
+      type: "varchar(13)",
+      notNull: true,
+    },
+
     product_id: {
       type: "integer",
       references: "products(id)",
