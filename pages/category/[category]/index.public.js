@@ -79,20 +79,6 @@ export default function Category() {
         </div>
       </header>
 
-      <header className="user-header">
-        <div className="home-icon">
-          <a href="/menu" rel="noopener noreferrer">
-            <img id="home-icon-img" src="/static/svg/home.svg" alt="home"></img>
-          </a>
-        </div>
-
-        <div className="cart-icon">
-          <a href="/cart" rel="noopener noreferrer">
-            <img src="/static/svg/cart.svg" alt="cart"></img>
-          </a>
-        </div>
-      </header>
-
       <section className="home" id="home">
         <h1 className="title">Produtos</h1>
         {products.map((product, index) => (

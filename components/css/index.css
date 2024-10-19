@@ -76,11 +76,6 @@ header .cart-icon img {
   background-color: var(--transparent-black);
   color: var(--text-color);
 }
-  display: flex;
-  justify-content: space-between;
-  padding: 15px;
-  background-color: var(--primary-color);
-}
 
 header .home-icon,
 header .cart-icon {
