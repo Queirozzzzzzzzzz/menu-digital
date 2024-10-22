@@ -9,6 +9,7 @@ export default function Category() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [total, setTotal] = useState(0);
 
   const saveToLocalStorage = (pProducts) => {
     if (!pProducts) pProducts = products;
@@ -26,50 +27,23 @@ export default function Category() {
   };
 
   useEffect(() => {
-    let existingProducts = loadFromLocalStorage();
+    const existingProducts = loadFromLocalStorage();
 
-    const updateProducts = async () => {
-      try {
-        const selectedProductIds =
-          JSON.parse(localStorage.getItem("selected_products_ids")) || [];
-
-        existingProducts = existingProducts.filter((product) =>
-          selectedProductIds.includes(product.id),
-        );
-
-        const missingProductIds = selectedProductIds.filter(
-          (id) => !existingProducts.some((p) => p.id === id),
-        );
-
-        let fetchedProducts = [];
-        for (const id of missingProductIds) {
-          const res = await fetch(`/api/v1/products/${id}`);
-          const resBody = await res.json();
-
-          fetchedProducts.push(resBody);
-        }
-
-        for (const p of fetchedProducts) {
-          p.tempId = `${new Date()}-${Math.floor(Math.random() * 4096) + 1}`;
-          for (const i of p.ingredients) {
-            i.tempId = `${new Date()}--${Math.floor(Math.random() * 4096) + 1}`;
-            if (!i.value) i.checked = true;
-          }
-        }
-
-        const combinedProducts = [...existingProducts, ...fetchedProducts];
-
-        setProducts(combinedProducts);
-        saveToLocalStorage(combinedProducts);
-        setLoading(false);
-      } catch (err) {
-        setError("Falha ao carregar produtos. Por favor, recarregue a página.");
-        setLoading(false);
-      }
-    };
-
-    updateProducts();
+    setProducts(existingProducts);
+    setTotal(getTotal(existingProducts));
+    setLoading(false);
   }, []);
+
+  const getTotal = (products) => {
+    if (!products) return 0;
+
+    let t = 0;
+    for (const p of products) {
+      t += parseFloat(p.finalPrice);
+    }
+
+    return Number(t.toFixed(2));
+  };
 
   if (isLoading || loading) {
     return <div>Carregando...</div>;
@@ -82,28 +56,92 @@ export default function Category() {
   const handleOrderSubmit = async () => {
     const now = new Date();
     const order_id = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${Math.floor(Math.random() * 4096) + 1}`;
+
+    // TODO
   };
 
   const removeProduct = (id) => {
-    const updatedProducts = products.filter((product) => product.id !== id);
-    const productsIds =
-      JSON.parse(localStorage.getItem("selected_products_ids")) || [];
-    const updatedProductsIds = productsIds.filter(
-      (productId) => productId !== id,
-    );
-    localStorage.setItem(
-      "selected_products_ids",
-      JSON.stringify(updatedProductsIds),
-    );
+    const updatedProducts = products.filter((product) => product.tempId !== id);
 
     setProducts(updatedProducts);
     saveToLocalStorage(updatedProducts);
+    setTotal(getTotal(updatedProducts));
   };
 
-  const handleIngredientValueChange = () => {};
+  const handleIngredientValueChange = (
+    action,
+    productTempId,
+    ingredientTempId,
+  ) => {
+    let product = products.find((p) => p.tempId === productTempId);
+    let ingredient = product.ingredients.find(
+      (i) => i.tempId === ingredientTempId,
+    );
 
-  const handleIngredientCheck = (productId, ingredientTempId, checked) => {
-    let product = products.find((p) => p.id === productId);
+    if (!ingredient) {
+      console.error(`Ingredient with tempId ${ingredientTempId} not found`);
+      return;
+    }
+
+    let multiplied = Math.max(
+      0,
+      ingredient.multiplied + (action === "+" ? 1 : -1),
+    );
+
+    let multipliedValue = ingredient.value * multiplied;
+    if (multiplied > 0) multipliedValue = ingredient.value + multipliedValue;
+
+    let extraPrice = ingredient.price * multiplied;
+
+    multipliedValue = Number(multipliedValue.toFixed(2));
+    extraPrice = Number(extraPrice.toFixed(2));
+
+    if (multiplied == 0) multipliedValue = ingredient.value;
+
+    let updatedProduct = {
+      ...product,
+      ingredients: product.ingredients.map((i) =>
+        i.tempId === ingredientTempId
+          ? {
+              ...i,
+              multipliedValue: multipliedValue,
+              multiplied: multiplied,
+              extraPrice: extraPrice,
+            }
+          : i,
+      ),
+    };
+
+    updatedProduct = {
+      ...updatedProduct,
+      finalPrice: calcProductFinalPrice(updatedProduct),
+    };
+
+    const updatedProducts = [...products];
+    const index = updatedProducts.findIndex((p) => p.tempId === productTempId);
+    if (index !== -1) {
+      updatedProducts[index] = updatedProduct;
+    }
+
+    setProducts(updatedProducts);
+    saveToLocalStorage(updatedProducts);
+    setTotal(getTotal(updatedProducts));
+  };
+
+  const calcProductFinalPrice = (product) => {
+    const price = parseFloat(product.price);
+
+    let extraPrice = 0;
+    for (const i of product.ingredients) {
+      if (i.extraPrice) extraPrice += parseFloat(i.extraPrice);
+    }
+
+    const totalPrice = price + extraPrice;
+    return totalPrice.toFixed(2);
+  };
+
+  const handleIngredientCheck = (productTempId, ingredientTempId, checked) => {
+    let product = products.find((p) => p.tempId === productTempId);
 
     if (product) {
       const updatedIngredients = product.ingredients.map((i) =>
@@ -114,7 +152,9 @@ export default function Category() {
 
       const newProducts = [...products];
 
-      const productIndex = newProducts.findIndex((p) => p.id === productId);
+      const productIndex = newProducts.findIndex(
+        (p) => p.tempId === productTempId,
+      );
 
       if (productIndex !== -1) {
         const updatedProduct = {
@@ -156,17 +196,18 @@ export default function Category() {
 
         {products.map((product, index) => (
           <div key={product.tempId} className="cart-item">
+            <button
+              className="remove-product-button"
+              onClick={() => removeProduct(product.tempId, product.tempId)}
+            >
+              Remover
+            </button>
+
             <div className="product-image">
               <img src={product.picture} alt={product.name} />
             </div>
 
             <div className="cart-item-content">
-              <button
-                className="remove-product-button"
-                onClick={() => removeProduct(product.id, product.tempId)}
-              >
-                Remover
-              </button>
               <div className="product-details">
                 <h2>{product.name}</h2>
               </div>
@@ -177,43 +218,56 @@ export default function Category() {
                 {product.ingredients.map((ingredient, i) => (
                   <div key={ingredient.tempId} className="ingredient">
                     <label htmlFor={`ingredient-${ingredient.tempId}`}>
-                      {ingredient.name}
+                      {ingredient.name} {ingredient.value !== null ? "(R$" : ""}{" "}
+                      {ingredient.price} {ingredient.value !== null ? ")" : ""}
                     </label>
 
                     {ingredient.value ? (
                       <div className="value-multiplier">
                         <input
                           type="number"
-                          value={ingredient.value}
+                          value={ingredient.multipliedValue}
                           min="1"
                           max="100"
                           onChange={handleIngredientValueChange}
                         />
                         <button
-                          onClick={() => handleIngredientValueChange("+")}
+                          onClick={() =>
+                            handleIngredientValueChange(
+                              "+",
+                              product.tempId,
+                              ingredient.tempId,
+                            )
+                          }
                         >
                           +
                         </button>
                         <button
-                          onClick={() => handleIngredientValueChange("-")}
+                          onClick={() =>
+                            handleIngredientValueChange(
+                              "-",
+                              product.tempId,
+                              ingredient.tempId,
+                            )
+                          }
                         >
                           -
                         </button>
                       </div>
                     ) : (
-                      <label class="custom-checkbox">
+                      <label className="custom-checkbox">
                         <input
                           type="checkbox"
                           checked={ingredient.checked}
                           onChange={() =>
                             handleIngredientCheck(
-                              product.id,
+                              product.tempId,
                               ingredient.tempId,
                               ingredient.checked,
                             )
                           }
                         />
-                        <span class="checkmark">
+                        <span className="checkmark">
                           <img src="/static/svg/yes.svg" alt="Checked" />
                         </span>
                       </label>
@@ -230,12 +284,31 @@ export default function Category() {
           <ul className="summary-items">
             {products.map((product) => (
               <li key={product.tempId}>
-                {product.name} - R$ {product.price}
+                <strong>
+                  {product.name} - R$ {product.finalPrice}
+                </strong>
+                <ul>
+                  {product.ingredients.map((ingredient, index) =>
+                    ingredient.extraPrice ? (
+                      <li key={index}>
+                        {ingredient.multiplied} {"x "} {ingredient.name}{" "}
+                        {" R$ "} {ingredient.extraPrice}
+                      </li>
+                    ) : ingredient.checked ? null : ingredient.value ? null : (
+                      <li style={{ textDecoration: "line-through" }}>
+                        {ingredient.name}
+                      </li>
+                    ),
+                  )}
+                </ul>
               </li>
             ))}
           </ul>
           <div className="total">
-            Total: <strong>R$</strong>
+            Total:{" "}
+            <strong>
+              {"R$ "} {total}
+            </strong>
           </div>
           <button className="finish-btn btn" onClick={handleOrderSubmit}>
             AVANÇAR

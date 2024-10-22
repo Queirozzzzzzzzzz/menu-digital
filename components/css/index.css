@@ -247,11 +247,12 @@ ul.menu-navigation .item-content {
   overflow: hidden;
   width: 100vw;
   padding: 0 1rem 1rem 1rem;
+  flex-direction: column;
 }
 
 .cart-item-content {
-  padding: .5rem;
-  min-width: 50vw;
+  padding: 0.5rem;
+  width: 95vw;
 }
 
 .cart-item .product-image img {
@@ -264,6 +265,8 @@ ul.menu-navigation .item-content {
 .remove-product-button {
   background-color: var(--red-color);
   height: 1rem;
+  width: 30%;
+  margin-bottom: 1rem;
   padding: 0 0.5rem 1.1rem 0.5rem;
 }
 
@@ -275,11 +278,12 @@ ul.menu-navigation .item-content {
 .cart-item .ingredient {
   display: flex;
   justify-content: space-between;
-  max-width: 50vw;
+  max-width: 90vw;
+  margin-bottom: 0.25rem;
 }
 
 .cart-item .ingredient label {
-  width: 50%;
+  width: 60%;
   word-wrap: break-word;
 }
 
@@ -289,7 +293,7 @@ ul.menu-navigation .item-content {
 }
 
 .cart-item .ingredient .value-multiplier input {
-  width: 1.5rem;
+  min-width: 1.5rem;
   height: 1.5rem;
   border-radius: 0.25rem;
   border: none;
@@ -308,7 +312,7 @@ ul.menu-navigation .item-content {
 .custom-checkbox {
   display: inline-flex;
   align-items: center;
-  cursor: pointer;  
+  cursor: pointer;
   justify-content: flex-end;
 }
 

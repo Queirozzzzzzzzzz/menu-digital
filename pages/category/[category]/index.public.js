@@ -21,7 +21,8 @@ export default function Category() {
         );
 
         if (!res.ok) {
-          throw new Error("Network response was not ok");
+          setError("Falha ao carregar produtos.");
+          return;
         }
 
         const resBody = await res.json();
@@ -38,28 +39,37 @@ export default function Category() {
     }
   }, [router.query.category]);
 
-  if (isLoading) {
+  if (isLoading || loading) {
     return <div>Carregando...</div>;
   }
 
-  const handleProductAdd = (productId) => {
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
+
+  const handleProductAdd = async (productId) => {
     try {
-      let selectedProducts =
-        JSON.parse(localStorage.getItem("selected_products_ids")) || [];
+      const res = await fetch(`/api/v1/products/${productId}`);
+      const product = await res.json();
 
-      selectedProducts.push(productId);
+      product.tempId = `${new Date()}-${Math.floor(Math.random() * 4096) + 1}`;
+      product.finalPrice = product.price;
+      for (const i of product.ingredients) {
+        i.tempId = `${new Date()}--${Math.floor(Math.random() * 4096) + 1}`;
+        if (!i.value) i.checked = true;
+        if (i.value) {
+          i.multipliedValue = i.value;
+          i.multiplied = 0;
+          i.extraPrice = 0;
+        }
+      }
 
-      localStorage.setItem(
-        "selected_products_ids",
-        JSON.stringify(selectedProducts),
-      );
+      let products = JSON.parse(localStorage.getItem("products")) || [];
+      products.push(product);
+
+      localStorage.setItem("products", JSON.stringify(products));
     } catch (error) {
       console.error("Error handling product addition:", error);
-
-      localStorage.setItem(
-        "selected_products_ids",
-        JSON.stringify([productId]),
-      );
     }
   };
 

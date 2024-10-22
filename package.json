@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "rawdev": "next dev",
     "dev": "npm run services:up && npm run migration:up && next dev",
     "build": "next build",
     "create:admin": "curl -X POST http://localhost:3000/api/v1/users/admin",
