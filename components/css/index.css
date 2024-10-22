@@ -244,6 +244,14 @@ ul.menu-navigation .item-content {
 .cart-item {
   display: flex;
   padding: 1rem;
+  overflow: hidden;
+  width: 100vw;
+  padding: 0 1rem 1rem 1rem;
+}
+
+.cart-item-content {
+  padding: .5rem;
+  min-width: 50vw;
 }
 
 .cart-item .product-image img {
@@ -251,11 +259,6 @@ ul.menu-navigation .item-content {
   height: 15rem;
   border-radius: 10px;
   object-fit: cover;
-}
-
-.cart-item .cart-item-content {
-  padding: 0 1rem 1rem 1rem;
-  width: 50vw;
 }
 
 .remove-product-button {
@@ -272,10 +275,22 @@ ul.menu-navigation .item-content {
 .cart-item .ingredient {
   display: flex;
   justify-content: space-between;
+  max-width: 50vw;
+}
+
+.cart-item .ingredient label {
+  width: 50%;
+  word-wrap: break-word;
+}
+
+.cart-item .ingredient .value-multiplier {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .cart-item .ingredient .value-multiplier input {
-  width: 2rem;
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 0.25rem;
   border: none;
   outline: none;
@@ -286,13 +301,15 @@ ul.menu-navigation .item-content {
 .cart-item .ingredient .value-multiplier button {
   padding: 0;
   width: 1.5rem;
+  height: 1.5rem;
   margin-left: 0.25rem;
 }
 
 .custom-checkbox {
   display: inline-flex;
   align-items: center;
-  cursor: pointer;
+  cursor: pointer;  
+  justify-content: flex-end;
 }
 
 .custom-checkbox input {
