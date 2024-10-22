@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import { useUser } from "pages/interface";
 
-export default function Category() {
+export default function Cart() {
   const router = useRouter();
   const { user, isLoading } = useUser();
   const [products, setProducts] = useState([]);
@@ -39,7 +39,7 @@ export default function Category() {
 
     let t = 0;
     for (const p of products) {
-      t += parseFloat(p.finalPrice);
+      t += parseFloat(p.total);
     }
 
     return Number(t.toFixed(2));
@@ -57,7 +57,48 @@ export default function Category() {
     const now = new Date();
     const order_id = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${Math.floor(Math.random() * 4096) + 1}`;
 
-    // TODO
+    let orders = [];
+
+    for (const p of products) {
+      const order = {
+        order_id: order_id,
+        product_id: p.id,
+        price: p.total,
+        observation: p.observation,
+        additional_ingredients: getAdditionalIngredients(p.ingredients),
+        removed_ingredients: getRemovedIngredients(p.ingredients),
+      };
+
+      orders.push(order);
+    }
+
+    localStorage.setItem("orders", JSON.stringify(orders));
+    router.push("/table");
+  };
+
+  const getAdditionalIngredients = (ingredients) => {
+    let additionalIngredients = [];
+    for (const i of ingredients) {
+      if (i.extraPrice > 0) {
+        const ingredient = {
+          id: i.id,
+          multiplied: i.multiplied,
+          price: i.extraPrice,
+        };
+        additionalIngredients.push(ingredient);
+      }
+    }
+
+    return additionalIngredients;
+  };
+
+  const getRemovedIngredients = (ingredients) => {
+    let removedIngredients = [];
+    for (const i of ingredients) {
+      if (i.checked !== undefined && !i.checked) removedIngredients.push(i.id);
+    }
+
+    return removedIngredients;
   };
 
   const removeProduct = (id) => {
@@ -114,7 +155,7 @@ export default function Category() {
 
     updatedProduct = {
       ...updatedProduct,
-      finalPrice: calcProductFinalPrice(updatedProduct),
+      total: calcProductTotal(updatedProduct),
     };
 
     const updatedProducts = [...products];
@@ -128,7 +169,7 @@ export default function Category() {
     setTotal(getTotal(updatedProducts));
   };
 
-  const calcProductFinalPrice = (product) => {
+  const calcProductTotal = (product) => {
     const price = parseFloat(product.price);
 
     let extraPrice = 0;
@@ -285,7 +326,7 @@ export default function Category() {
             {products.map((product) => (
               <li key={product.tempId}>
                 <strong>
-                  {product.name} - R$ {product.finalPrice}
+                  {product.name} - R$ {product.total}
                 </strong>
                 <ul>
                   {product.ingredients.map((ingredient, index) =>

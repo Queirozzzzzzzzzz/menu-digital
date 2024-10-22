@@ -53,11 +53,12 @@ export default function Category() {
       const product = await res.json();
 
       product.tempId = `${new Date()}-${Math.floor(Math.random() * 4096) + 1}`;
-      product.finalPrice = product.price;
+      product.total = product.price;
       for (const i of product.ingredients) {
         i.tempId = `${new Date()}--${Math.floor(Math.random() * 4096) + 1}`;
-        if (!i.value) i.checked = true;
-        if (i.value) {
+        if (!i.value) {
+          i.checked = true;
+        } else {
           i.multipliedValue = i.value;
           i.multiplied = 0;
           i.extraPrice = 0;
