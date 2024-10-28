@@ -6,13 +6,54 @@ import { useUser } from "pages/interface";
 export default function Table() {
   const router = useRouter();
   const { user, isLoading } = useUser();
-  const [error, setError] = useState(null);
-  const [order, setOrder] = useState(true);
+  const [tableNumber, setTableNumber] = useState(1);
+
+  const resetLocalStorage = () => {
+    localStorage.setItem("orders", JSON.stringify([]));
+    localStorage.setItem("products", JSON.stringify([]));
+  };
+
+  const decreaseTableNumber = () => {
+    if (tableNumber > 1) setTableNumber(tableNumber - 1);
+  };
+
+  const increaseTableNumber = () => {
+    setTableNumber(tableNumber + 1);
+  };
+
+  const handleConfirm = async () => {
+    const orders = loadFromLocalStorage();
+
+    try {
+      const res = await fetch("/api/v1/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ orders: orders, table_number: tableNumber }),
+      });
+
+      if (res.status === 201) {
+        resetLocalStorage();
+        router.push("/await");
+        return;
+      } else {
+        const resBody = await res.json();
+        alert(resBody.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  };
+
+  const handleCancel = () => {
+    router.push("/cart");
+  };
 
   const loadFromLocalStorage = () => {
     const orders = localStorage.getItem("orders");
     if (orders) {
-      setOrder(JSON.parse(orders));
       return JSON.parse(orders);
     }
 
@@ -21,10 +62,6 @@ export default function Table() {
 
   if (isLoading) {
     return <div>Carregando...</div>;
-  }
-
-  if (error) {
-    return <div className="error">{error}</div>;
   }
 
   return (
@@ -43,7 +80,22 @@ export default function Table() {
         </div>
       </header>
 
-      <h1>Mesa</h1>
+      <div className="table-items">
+        <h1 className="title">Selecione Sua Mesa</h1>
+        <div className="table-chooser">
+          <button className="table-arrow" onClick={decreaseTableNumber}>
+            <img src="/static/svg/left-arrow.svg" />
+          </button>
+          <span>{tableNumber}</span>
+          <button className="table-arrow" onClick={increaseTableNumber}>
+            <img src="/static/svg/right-arrow.svg" />
+          </button>
+        </div>
+        <div className="table-buttons">
+          <button onClick={handleConfirm}>Confirmar pedido</button>
+          <button onClick={handleCancel}>Voltar</button>
+        </div>
+      </div>
     </>
   );
 }

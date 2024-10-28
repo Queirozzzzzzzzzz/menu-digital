@@ -43,15 +43,22 @@ async function getHandler(req, res) {
 }
 
 async function postValidationHandler(req, res, next) {
-  const cleanValues = validator(req.body, {
-    order_id: "required",
-    product_id: "required",
-    price: "required",
-    table_number: "required",
-    observation: "optional",
-    additional_ingredients: "optional",
-    removed_ingredients: "optional",
-  });
+  let cleanValues = [];
+
+  for (const o of req.body.orders) {
+    o.table_number = req.body.table_number;
+    const cleanValue = validator(o, {
+      order_id: "required",
+      product_id: "required",
+      price: "required",
+      table_number: "required",
+      observation: "optional",
+      additional_ingredients: "optional",
+      removed_ingredients: "optional",
+    });
+
+    cleanValues.push(cleanValue);
+  }
 
   req.body = cleanValues;
 
@@ -59,16 +66,19 @@ async function postValidationHandler(req, res, next) {
 }
 
 async function postHandler(req, res) {
-  let createdOrder;
+  const orders = req.body;
 
+  let createdOrders = [];
   const transaction = await db.transaction();
-
   try {
     transaction.query("BEGIN");
 
-    const newOrder = await order.create(req.body, { transaction });
-    await order.setIngredients(newOrder.id, req.body, { transaction });
-    createdOrder = await order.findById(newOrder.id, { transaction });
+    for (const o of orders) {
+      const newOrder = await order.create(o, { transaction });
+      await order.setIngredients(newOrder.id, o, { transaction });
+      const updatedOrder = await order.findById(newOrder.id, { transaction });
+      createdOrders.push(updatedOrder);
+    }
 
     transaction.query("COMMIT");
   } catch (err) {
@@ -88,7 +98,9 @@ async function postHandler(req, res) {
 
     if (
       err.message ===
-      'insert or update on table "additional_ingredients" violates foreign key constraint "additional_ingredients_ingredient_id_fkey"' || err.message === 'inserção ou atualização em tabela "additional_ingredients" viola restrição de chave estrangeira "additional_ingredients_ingredient_id_fkey"'
+        'insert or update on table "additional_ingredients" violates foreign key constraint "additional_ingredients_ingredient_id_fkey"' ||
+      err.message ===
+        'inserção ou atualização em tabela "additional_ingredients" viola restrição de chave estrangeira "additional_ingredients_ingredient_id_fkey"'
     ) {
       throw new NotFoundError({
         message: `O ingrediente selecionado não foi encontrado.`,
@@ -102,7 +114,9 @@ async function postHandler(req, res) {
 
     if (
       err.message ===
-      'insert or update on table "removed_ingredients" violates foreign key constraint "removed_ingredients_ingredient_id_fkey"' || err.message === 'inserção ou atualização em tabela "removed_ingredients" viola restrição de chave estrangeira "removed_ingredients_ingredient_id_fkey"'
+        'insert or update on table "removed_ingredients" violates foreign key constraint "removed_ingredients_ingredient_id_fkey"' ||
+      err.message ===
+        'inserção ou atualização em tabela "removed_ingredients" viola restrição de chave estrangeira "removed_ingredients_ingredient_id_fkey"'
     ) {
       throw new NotFoundError({
         message: `O ingrediente selecionado não foi encontrado.`,
@@ -129,5 +143,5 @@ async function postHandler(req, res) {
     transaction.release();
   }
 
-  return res.status(201).json(createdOrder);
+  return res.status(201).json(createdOrders);
 }
