@@ -18,8 +18,6 @@ async function create(values, options = {}) {
   };
   const res = await db.query(query);
 
-  if (!res) console.error(values)
-
   return res.rows[0];
 }
 
