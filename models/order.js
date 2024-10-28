@@ -16,7 +16,7 @@ async function create(values, options = {}) {
       values.observation,
     ],
   };
-  const res = await db.query(query);
+  const res = await db.query(query, { transaction: options.transaction });
 
   return res.rows[0];
 }
@@ -41,7 +41,7 @@ async function setIngredients(id, values, options = {}) {
     });
 
     for (const q of queries) {
-      await db.query(q);
+      await db.query(q, { transaction: options.transaction });
     }
   }
 
@@ -62,7 +62,7 @@ async function setIngredients(id, values, options = {}) {
     });
 
     for (const q of queries) {
-      await db.query(q);
+      await db.query(q, { transaction: options.transaction });
     }
   }
 }
@@ -77,7 +77,7 @@ async function listByStatus(status = [], options = {}) {
     values: [status],
   };
 
-  const res = await db.query(query, options);
+  const res = await db.query(query, { transaction: options.transaction });
 
   return res.rows;
 }
@@ -118,7 +118,7 @@ async function findById(id, options = {}) {
     values: [id],
   };
 
-  const res = await db.query(query, options);
+  const res = await db.query(query, { transaction: options.transaction });
 
   if (res.rowCount === 0) {
     throw new NotFoundError({
@@ -142,7 +142,7 @@ async function setStatus(id, status = [], options = {}) {
     values: [id, status[0]],
   };
 
-  const res = await db.query(query, options);
+  const res = await db.query(query, { transaction: options.transaction });
 
   if (res.rowCount === 0) {
     throw new NotFoundError({

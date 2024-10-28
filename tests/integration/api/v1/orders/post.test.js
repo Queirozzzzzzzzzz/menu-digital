@@ -36,7 +36,7 @@ describe("POST to /api/v1/orders", () => {
       ];
 
       const values = {
-        order_id: '209304-2094',
+        order_id: "209304-2094",
         product_id: product.id,
         price: 48.99,
         table_number: 8,
@@ -55,20 +55,26 @@ describe("POST to /api/v1/orders", () => {
       let removedIngredientsOutput = [];
       removedIngredientsOutput.push({ name: ingredient2.name });
 
-      const { res, resBody } = await reqB.post(values);
+      const { res, resBody } = await reqB.post({
+        orders: [values],
+        table_number: 8,
+      });
 
       expect(res.status).toBe(201);
-      expect(resBody).toMatchObject({
-        product_id: product.id,
-        price: "48.99",
-        table_number: 8,
-        observation: "Observação.",
-        status: "pending",
-        additional_ingredients: additionalIngredientsOutput,
-        removed_ingredients: removedIngredientsOutput,
-      });
+      expect(resBody).toMatchObject([
+        {
+          order_id: "209304-2094",
+          product_id: product.id,
+          price: "48.99",
+          table_number: 8,
+          observation: "Observação.",
+          status: "pending",
+          additional_ingredients: additionalIngredientsOutput,
+          removed_ingredients: removedIngredientsOutput,
+        },
+      ]);
       expect(
-        [resBody.created_at, resBody.updated_at].every(
+        [resBody[0].created_at, resBody[0].updated_at].every(
           (date) => !isNaN(Date.parse(date)),
         ),
       ).toBeTruthy();
@@ -84,7 +90,7 @@ describe("POST to /api/v1/orders", () => {
       ];
 
       const values = {
-        order_id: '209304-2094',
+        order_id: "209304-2094",
         product_id: product.id,
         price: 48.99,
         table_number: 8,
@@ -92,7 +98,10 @@ describe("POST to /api/v1/orders", () => {
         additional_ingredients: additionalIngredientsInput,
       };
 
-      const { res, resBody } = await reqB.post(values);
+      const { res, resBody } = await reqB.post({
+        orders: [values],
+        table_number: 8,
+      });
 
       expect(res.status).toBe(404);
       expect(resBody).toEqual({
@@ -118,7 +127,7 @@ describe("POST to /api/v1/orders", () => {
       const removedIngredientsInput = [1];
 
       const values = {
-        order_id: '209304-2094',
+        order_id: "209304-2094",
         product_id: product.id,
         price: 48.99,
         table_number: 8,
@@ -126,7 +135,10 @@ describe("POST to /api/v1/orders", () => {
         removed_ingredients: removedIngredientsInput,
       };
 
-      const { res, resBody } = await reqB.post(values);
+      const { res, resBody } = await reqB.post({
+        orders: [values],
+        table_number: 8,
+      });
 
       expect(res.status).toBe(404);
       expect(resBody).toEqual({
@@ -154,35 +166,40 @@ describe("POST to /api/v1/orders", () => {
       });
 
       const values = {
-        order_id: '209304-2094',
+        order_id: "209304-2094",
         product_id: product.id,
         price: 48.99,
         table_number: 8,
       };
 
-      const { res, resBody } = await reqB.post(values);
-
+      const { res, resBody } = await reqB.post({
+        orders: [values],
+        table_number: 8,
+      });
       expect(res.status).toBe(201);
-      expect(resBody.product_id).toEqual(product.id);
-      expect(resBody.price).toEqual("48.99");
-      expect(resBody.table_number).toEqual(8);
-      expect(resBody.observation).toEqual(null);
-      expect(resBody.status).toEqual("pending");
-      expect(Date.parse(resBody.created_at)).not.toEqual(NaN);
-      expect(Date.parse(resBody.updated_at)).not.toEqual(NaN);
+      expect(resBody[0].product_id).toEqual(product.id);
+      expect(resBody[0].price).toEqual("48.99");
+      expect(resBody[0].table_number).toEqual(8);
+      expect(resBody[0].observation).toEqual(null);
+      expect(resBody[0].status).toEqual("pending");
+      expect(Date.parse(resBody[0].created_at)).not.toEqual(NaN);
+      expect(Date.parse(resBody[0].updated_at)).not.toEqual(NaN);
     });
 
     test("With invalid product_id", async () => {
       const reqB = new RequestBuilder("/api/v1/orders");
 
       const values = {
-        order_id: '209304-2094',
+        order_id: "209304-2094",
         product_id: 2,
         price: 48.99,
         table_number: 8,
       };
 
-      const { res, resBody } = await reqB.post(values);
+      const { res, resBody } = await reqB.post({
+        orders: [values],
+        table_number: 8,
+      });
 
       expect(res.status).toBe(404);
       expect(resBody).toEqual({
@@ -209,13 +226,16 @@ describe("POST to /api/v1/orders", () => {
       });
 
       const values = {
-        order_id: '209304-2094',
+        order_id: "209304-2094",
         product_id: product.id,
         table_number: 8,
         observation: "Observação.",
       };
 
-      const { res, resBody } = await reqB.post(values);
+      const { res, resBody } = await reqB.post({
+        orders: [values],
+        table_number: 8,
+      });
 
       expect(res.status).toBe(400);
       expect(resBody).toEqual({
@@ -243,13 +263,15 @@ describe("POST to /api/v1/orders", () => {
       });
 
       const values = {
-        order_id: '209304-2094',
+        order_id: "209304-2094",
         product_id: product.id,
         price: 48.99,
         observation: "Observação.",
       };
 
-      const { res, resBody } = await reqB.post(values);
+      const { res, resBody } = await reqB.post({
+        orders: [values],
+      });
 
       expect(res.status).toBe(400);
       expect(resBody).toEqual({
@@ -277,13 +299,16 @@ describe("POST to /api/v1/orders", () => {
       });
 
       const values = {
-        order_id: '209304-2094',
+        order_id: "209304-2094",
         price: 48.99,
         table_number: 8,
         observation: "Observação.",
       };
 
-      const { res, resBody } = await reqB.post(values);
+      const { res, resBody } = await reqB.post({
+        orders: [values],
+        table_number: 8,
+      });
 
       expect(res.status).toBe(400);
       expect(resBody).toEqual({
