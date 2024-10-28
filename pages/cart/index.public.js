@@ -71,14 +71,18 @@ export default function Cart() {
     let orders = [];
 
     for (const p of products) {
-      const order = {
+      let order = {
         order_id: order_id,
         product_id: p.id,
         price: p.total,
-        observation: p.observation,
-        additional_ingredients: getAdditionalIngredients(p.ingredients),
-        removed_ingredients: getRemovedIngredients(p.ingredients),
+        observation: p.observation
       };
+
+      const additionalIngredients = getAdditionalIngredients(p.ingredients)
+      if (additionalIngredients.length > 0) order = { ...order, additional_ingredients: additionalIngredients }
+
+      const removedIngredients = getRemovedIngredients(p.ingredients)
+      if (removedIngredients.length > 0) order = { ...order, removed_ingredients: removedIngredients }
 
       orders.push(order);
     }
@@ -92,7 +96,7 @@ export default function Cart() {
     for (const i of ingredients) {
       if (i.extraPrice > 0) {
         const ingredient = {
-          id: i.id,
+          ingredient_id: i.id,
           multiplied: i.multiplied,
           price: i.extraPrice,
         };
