@@ -40,11 +40,43 @@ export default function Category() {
   }, [router.query.category]);
 
   if (isLoading || loading) {
-    return <div>Carregando...</div>;
+    return <>
+      <header className="user-header">
+        <div className="home-icon">
+          <a href="/menu" rel="noopener noreferrer">
+            <img id="home-icon-img" src="/static/svg/home.svg" alt="home"></img>
+          </a>
+        </div>
+
+        <div className="cart-icon">
+          <a href="/cart" rel="noopener noreferrer">
+            <img src="/static/svg/cart.svg" alt="cart"></img>
+          </a>
+        </div>
+      </header>
+
+      <div>Carregando...</div>
+    </>;
   }
 
   if (error) {
-    return <div className="error">{error}</div>;
+    <>
+      <header className="user-header">
+        <div className="home-icon">
+          <a href="/menu" rel="noopener noreferrer">
+            <img id="home-icon-img" src="/static/svg/home.svg" alt="home"></img>
+          </a>
+        </div>
+
+        <div className="cart-icon">
+          <a href="/cart" rel="noopener noreferrer">
+            <img src="/static/svg/cart.svg" alt="cart"></img>
+          </a>
+        </div>
+      </header>
+
+      <div className="error">{error}</div>
+    </>
   }
 
   const handleProductAdd = async (productId) => {
