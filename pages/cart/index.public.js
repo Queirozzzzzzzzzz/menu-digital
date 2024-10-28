@@ -53,7 +53,18 @@ export default function Cart() {
     return <div className="error">{error}</div>;
   }
 
+  const handleOrderClear = () => {
+    saveToLocalStorage([])
+    setProducts([])
+    setTotal(0)
+  }
+
   const handleOrderSubmit = async () => {
+    if (products.length <= 0) {
+      alert("Adicione ao menos um produto ao carrinho!")
+      return;
+    }
+
     const now = new Date();
     const order_id = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${Math.floor(Math.random() * 4096) + 1}`;
 
@@ -144,11 +155,11 @@ export default function Cart() {
       ingredients: product.ingredients.map((i) =>
         i.tempId === ingredientTempId
           ? {
-              ...i,
-              multipliedValue: multipliedValue,
-              multiplied: multiplied,
-              extraPrice: extraPrice,
-            }
+            ...i,
+            multipliedValue: multipliedValue,
+            multiplied: multiplied,
+            extraPrice: extraPrice,
+          }
           : i,
       ),
     };
@@ -231,6 +242,10 @@ export default function Cart() {
           </a>
         </div>
       </header>
+
+      <button className="clear-btn btn" onClick={handleOrderClear}>
+        LIMPAR CARRINHO
+      </button>
 
       <section className="cart-section">
         <h1 className="title">Carrinho</h1>

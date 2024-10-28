@@ -334,7 +334,7 @@ ul.menu-navigation .item-content {
   align-items: center;
 }
 
-.custom-checkbox input:checked + .checkmark {
+.custom-checkbox input:checked+.checkmark {
   background-color: var(--secondary-color);
 }
 
@@ -345,10 +345,69 @@ ul.menu-navigation .item-content {
   height: auto;
 }
 
-.custom-checkbox input:checked + .checkmark img {
+.custom-checkbox input:checked+.checkmark img {
   display: block;
 }
 
 .summary {
   padding: 1rem;
+}
+
+.clear-btn {
+  background-color: var(--red-color);
+  width: 90vw;
+  margin-left: 5vw;
+  height: auto;
+}
+
+.finish-btn {
+  width: 100%;
+}
+
+.table-items {
+  height: 80vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.table-chooser {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.table-chooser span {
+  width: 25vw;
+  height: 30vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 5rem;
+}
+
+.table-arrow {
+  background: none;
+}
+
+.table-arrow img {
+  width: 3rem;
+  height: 3rem;
+}
+
+.table-buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+}
+
+.table-buttons button {
+  width: 50vw;
+  margin: .5rem 0 .5rem 0;
+  font-size: 1rem;
 }
