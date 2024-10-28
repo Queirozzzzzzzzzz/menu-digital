@@ -143,6 +143,7 @@ async function createIngredient(values = {}) {
 
 async function createOrder(values = {}) {
   const info = {
+    order_id: values.order_id || "02894-0294",
     product_id: values.product_id,
     price: values.price || 47.27,
     table_number: values.table_number || 12,

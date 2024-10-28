@@ -2,7 +2,7 @@ import { NotFoundError } from "errors";
 import db from "infra/database";
 
 async function create(values, options = {}) {
-  const orderQuery = {
+  const query = {
     text: `
     INSERT INTO orders (order_id, product_id, price, table_number, observation)
     VALUES ($1, $2, $3, $4, $5)
@@ -16,10 +16,11 @@ async function create(values, options = {}) {
       values.observation,
     ],
   };
+  const res = await db.query(query);
 
-  const createRes = await db.query(orderQuery);
+  if (!res) console.error(values)
 
-  return createRes.rows[0];
+  return res.rows[0];
 }
 
 async function setIngredients(id, values, options = {}) {

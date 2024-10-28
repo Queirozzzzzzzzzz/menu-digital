@@ -289,6 +289,16 @@ const schemas = {
     });
   },
 
+  order_id: function () {
+    return Joi.object({
+      order_id: Joi.string().max(72).trim().when("$required.order_id", {
+        is: "required",
+        then: Joi.required(),
+        otherwise: Joi.optional(),
+      }),
+    });
+  },
+
   product_id: function () {
     return Joi.object({
       product_id: Joi.number().integer().when("$required.product_id", {

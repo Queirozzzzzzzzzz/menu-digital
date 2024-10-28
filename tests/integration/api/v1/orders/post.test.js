@@ -36,6 +36,7 @@ describe("POST to /api/v1/orders", () => {
       ];
 
       const values = {
+        order_id: '209304-2094',
         product_id: product.id,
         price: 48.99,
         table_number: 8,
@@ -83,6 +84,7 @@ describe("POST to /api/v1/orders", () => {
       ];
 
       const values = {
+        order_id: '209304-2094',
         product_id: product.id,
         price: 48.99,
         table_number: 8,
@@ -116,6 +118,7 @@ describe("POST to /api/v1/orders", () => {
       const removedIngredientsInput = [1];
 
       const values = {
+        order_id: '209304-2094',
         product_id: product.id,
         price: 48.99,
         table_number: 8,
@@ -151,6 +154,7 @@ describe("POST to /api/v1/orders", () => {
       });
 
       const values = {
+        order_id: '209304-2094',
         product_id: product.id,
         price: 48.99,
         table_number: 8,
@@ -172,6 +176,7 @@ describe("POST to /api/v1/orders", () => {
       const reqB = new RequestBuilder("/api/v1/orders");
 
       const values = {
+        order_id: '209304-2094',
         product_id: 2,
         price: 48.99,
         table_number: 8,
@@ -204,6 +209,7 @@ describe("POST to /api/v1/orders", () => {
       });
 
       const values = {
+        order_id: '209304-2094',
         product_id: product.id,
         table_number: 8,
         observation: "Observação.",
@@ -237,6 +243,7 @@ describe("POST to /api/v1/orders", () => {
       });
 
       const values = {
+        order_id: '209304-2094',
         product_id: product.id,
         price: 48.99,
         observation: "Observação.",
@@ -270,6 +277,7 @@ describe("POST to /api/v1/orders", () => {
       });
 
       const values = {
+        order_id: '209304-2094',
         price: 48.99,
         table_number: 8,
         observation: "Observação.",

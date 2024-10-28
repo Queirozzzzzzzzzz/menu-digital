@@ -44,6 +44,7 @@ async function getHandler(req, res) {
 
 async function postValidationHandler(req, res, next) {
   const cleanValues = validator(req.body, {
+    order_id: "required",
     product_id: "required",
     price: "required",
     table_number: "required",
@@ -87,7 +88,7 @@ async function postHandler(req, res) {
 
     if (
       err.message ===
-      'insert or update on table "additional_ingredients" violates foreign key constraint "additional_ingredients_ingredient_id_fkey"'
+      'insert or update on table "additional_ingredients" violates foreign key constraint "additional_ingredients_ingredient_id_fkey"' || err.message === 'inserção ou atualização em tabela "additional_ingredients" viola restrição de chave estrangeira "additional_ingredients_ingredient_id_fkey"'
     ) {
       throw new NotFoundError({
         message: `O ingrediente selecionado não foi encontrado.`,
@@ -101,7 +102,7 @@ async function postHandler(req, res) {
 
     if (
       err.message ===
-      'insert or update on table "removed_ingredients" violates foreign key constraint "removed_ingredients_ingredient_id_fkey"'
+      'insert or update on table "removed_ingredients" violates foreign key constraint "removed_ingredients_ingredient_id_fkey"' || err.message === 'inserção ou atualização em tabela "removed_ingredients" viola restrição de chave estrangeira "removed_ingredients_ingredient_id_fkey"'
     ) {
       throw new NotFoundError({
         message: `O ingrediente selecionado não foi encontrado.`,
