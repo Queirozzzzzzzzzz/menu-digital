@@ -173,17 +173,19 @@ export default function EditProduct() {
       <AdminHeader />
 
       <section className="sub-header">
-        <div className="home-icon">
-          <a href="/admin/products/create" rel="noopener noreferrer">
-            <p>ADICIONAR</p>
-          </a>
-        </div>
+        <nav>
+          <div className="menu-item">
+            <a href="/admin/products/create" rel="noopener noreferrer">
+              <p>ADICIONAR</p>
+            </a>
+          </div>
 
-        <div className="home-icon">
-          <a href="/admin/products" rel="noopener noreferrer">
-            <p>LISTAR</p>
-          </a>
-        </div>
+          <div className="menu-item">
+            <a href="/admin/products" rel="noopener noreferrer">
+              <p>LISTAR</p>
+            </a>
+          </div>
+        </nav>
       </section>
 
       <section className="products" id="edit">

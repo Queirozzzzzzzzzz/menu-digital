@@ -421,3 +421,64 @@ ul.menu-navigation .item-content {
 .card-1.missing {
   background-color: var(--yellow-color);
 }
+
+/* Tablet */
+@media (min-width: 481px) and (max-width: 767px) {
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .sub-header,
+  .admin-header {
+    background-color: var(--primary-color);
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .sub-header nav,
+  .admin-header nav {
+    padding: 2rem;
+    display: flex;
+    width: 50%;
+    justify-content: space-between;
+  }
+
+  .sub-header nav {
+    width: 35%;
+  }
+
+  .sub-header nav .menu-item,
+  .admin-header nav .menu-item {
+    background-color: var(--secondary-color);
+    width: 20%;
+    padding: 0.3rem;
+    border-radius: 0.2rem;
+    text-align: center;
+  }
+
+  .sub-header nav .menu-item {
+    width: 45%;
+    padding: 0;
+  }
+
+  .sub-header nav .menu-item a,
+  .admin-header nav .menu-item a {
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: bold;
+  }
+
+  .products {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .products .card-1,
+  .products .card-2 {
+    justify-content: center;
+    width: auto;
+  }
+}
