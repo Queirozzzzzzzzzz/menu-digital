@@ -98,7 +98,7 @@ export default function Products() {
           <p>Nenhum produto foi encontrado.</p>
         ) : (
           products.map((p) => (
-            <div className={"card-1"} key={p.id}>
+            <div className={`card-1 ${p.status}`} key={p.id}>
               <>
                 <img src={p.picture} />
                 <div className="info">

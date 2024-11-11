@@ -7,6 +7,7 @@
   --secondary-color: #caba9c;
   --text-color: whitesmoke;
   --red-color: rgb(165, 0, 0);
+  --yellow-color: rgb(255, 230, 0);
 }
 
 * {
@@ -334,7 +335,7 @@ ul.menu-navigation .item-content {
   align-items: center;
 }
 
-.custom-checkbox input:checked+.checkmark {
+.custom-checkbox input:checked + .checkmark {
   background-color: var(--secondary-color);
 }
 
@@ -345,7 +346,7 @@ ul.menu-navigation .item-content {
   height: auto;
 }
 
-.custom-checkbox input:checked+.checkmark img {
+.custom-checkbox input:checked + .checkmark img {
   display: block;
 }
 
@@ -408,6 +409,15 @@ ul.menu-navigation .item-content {
 
 .table-buttons button {
   width: 50vw;
-  margin: .5rem 0 .5rem 0;
+  margin: 0.5rem 0 0.5rem 0;
   font-size: 1rem;
+}
+
+.card-1.missing,
+.card-1.disabled {
+  background-color: var(--red-color);
+}
+
+.card-1.missing {
+  background-color: var(--yellow-color);
 }
