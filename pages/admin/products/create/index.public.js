@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 import { useUser } from "pages/interface";
+import AdminHeader from "components/adminHeader";
 
 export default function CreateProduct() {
   const router = useRouter();
@@ -124,25 +125,7 @@ export default function CreateProduct() {
 
   return (
     <>
-      <header className="user-header">
-        <div className="home-icon">
-          <a href="/admin/orders" rel="noopener noreferrer">
-            <p>PEDIDOS</p>
-          </a>
-        </div>
-
-        <div className="home-icon">
-          <a href="/admin/products/create" rel="noopener noreferrer">
-            <p>PRODUTOS</p>
-          </a>
-        </div>
-
-        <div className="home-icon">
-          <a href="/admin/statistics" rel="noopener noreferrer">
-            <p>ESTATÍSTICAS</p>
-          </a>
-        </div>
-      </header>
+      <AdminHeader />
 
       <section className="sub-header">
         <div className="home-icon">
@@ -226,7 +209,6 @@ export default function CreateProduct() {
           </button>
           <button type="submit">Criar</button>
         </form>
-
         <h2>Selected Ingredients</h2>
         <ul>
           {ingredients.map((ingredient) => (
