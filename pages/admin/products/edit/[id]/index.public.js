@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import { useUser } from "pages/interface";
 
-export default function Products() {
+export default function EditProduct() {
   const router = useRouter();
   const { user, isLoading } = useUser();
   const productId = router.query.id;
@@ -169,98 +169,132 @@ export default function Products() {
 
   return (
     <>
-      <h1>Editar Produto</h1>
+      <header className="user-header">
+        <div className="home-icon">
+          <a href="/admin/orders" rel="noopener noreferrer">
+            <p>PEDIDOS</p>
+          </a>
+        </div>
 
-      <form onSubmit={handleSubmit}>
-        <img src={`${pictureUrl}`} />
-        <label>
-          Imagem:
-          <input type="file" onChange={handleFileChange} />
-        </label>
-        <br />
-        <label>
-          Nome:
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </label>
-        <br />
-        <label>
-          Preço:
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            required
-          />
-        </label>
-        <br />
-        <label>
-          Categoria:
-          <select
-            value={selectedCategory?.id || ""}
-            onChange={handleCategoryChange}
-          >
-            <option value="" disabled>
-              Selecione a categoria
-            </option>
-            {categoriesOptions.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <br />
-        <label>
-          Ingrediente:
-          <select
-            value={selectedIngredient?.id || ""}
-            onChange={handleIngredientChange}
-          >
-            <option value="" disabled>
-              Selecione um ingrediente
-            </option>
-            {ingredientsOptions.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <br />
-        <label>
-          Status:
-          <select
-            value={productStatus}
-            onChange={(e) => setProductStatus(e.target.value)}
-          >
-            <option value="available">Available</option>
-            <option value="missing">Missing</option>
-            <option value="disabled">Disabled</option>
-          </select>
-        </label>
-        <br />
-        <button type="button" onClick={addIngredient}>
-          Adicionar
-        </button>
-        <button type="submit">Atualizar</button>
-      </form>
+        <div className="home-icon">
+          <a href="/admin/products/create" rel="noopener noreferrer">
+            <p>PRODUTOS</p>
+          </a>
+        </div>
 
-      <h2>Selected Ingredients</h2>
-      <ul>
-        {ingredients.map((ingredient) => (
-          <li key={ingredient.id}>
-            {ingredient.name}{" "}
-            <button onClick={() => removeIngredient(ingredient.id)}>
-              Remove
-            </button>
-          </li>
-        ))}
-      </ul>
+        <div className="home-icon">
+          <a href="/admin/statistics" rel="noopener noreferrer">
+            <p>ESTATÍSTICAS</p>
+          </a>
+        </div>
+      </header>
+
+      <section className="sub-header">
+        <div className="home-icon">
+          <a href="/admin/products/create" rel="noopener noreferrer">
+            <p>ADICIONAR</p>
+          </a>
+        </div>
+
+        <div className="home-icon">
+          <a href="/admin/products" rel="noopener noreferrer">
+            <p>LISTAR</p>
+          </a>
+        </div>
+      </section>
+
+      <section className="products" id="edit">
+        <form onSubmit={handleSubmit}>
+          <img src={`${pictureUrl}`} />
+          <label>
+            Imagem:
+            <input type="file" onChange={handleFileChange} />
+          </label>
+          <br />
+          <label>
+            Nome:
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </label>
+          <br />
+          <label>
+            Preço:
+            <input
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              required
+            />
+          </label>
+          <br />
+          <label>
+            Categoria:
+            <select
+              value={selectedCategory?.id || ""}
+              onChange={handleCategoryChange}
+            >
+              <option value="" disabled>
+                Selecione a categoria
+              </option>
+              {categoriesOptions.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <br />
+          <label>
+            Ingrediente:
+            <select
+              value={selectedIngredient?.id || ""}
+              onChange={handleIngredientChange}
+            >
+              <option value="" disabled>
+                Selecione um ingrediente
+              </option>
+              {ingredientsOptions.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <br />
+          <label>
+            Status:
+            <select
+              value={productStatus}
+              onChange={(e) => setProductStatus(e.target.value)}
+            >
+              <option value="available">Available</option>
+              <option value="missing">Missing</option>
+              <option value="disabled">Disabled</option>
+            </select>
+          </label>
+          <br />
+          <button type="button" onClick={addIngredient}>
+            Adicionar
+          </button>
+          <button type="submit">Atualizar</button>
+        </form>
+
+        <h2>Selected Ingredients</h2>
+        <ul>
+          {ingredients.map((ingredient) => (
+            <li key={ingredient.id}>
+              {ingredient.name}{" "}
+              <button onClick={() => removeIngredient(ingredient.id)}>
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
+      </section>
     </>
   );
 }

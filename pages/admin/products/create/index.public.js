@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import { useUser } from "pages/interface";
 
-export default function Products() {
+export default function CreateProduct() {
   const router = useRouter();
   const { user, isLoading } = useUser();
 
@@ -124,87 +124,121 @@ export default function Products() {
 
   return (
     <>
-      <h1>Produto</h1>
+      <header className="user-header">
+        <div className="home-icon">
+          <a href="/admin/orders" rel="noopener noreferrer">
+            <p>PEDIDOS</p>
+          </a>
+        </div>
 
-      <form onSubmit={handleSubmit}>
-        <img src={`${pictureUrl}`} />
-        <label>
-          Imagem:
-          <input type="file" onChange={handleFileChange} />
-        </label>
-        <br />
-        <label>
-          Nome:
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </label>
-        <br />
-        <label>
-          Preço:
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            required
-          />
-        </label>
-        <br />
+        <div className="home-icon">
+          <a href="/admin/products/create" rel="noopener noreferrer">
+            <p>PRODUTOS</p>
+          </a>
+        </div>
 
-        <label>
-          Categoria:
-          <select
-            value={selectedCategory || ""}
-            onChange={handleCategoryChange}
-          >
-            <option value="" disabled>
-              Selecione a categoria
-            </option>
-            {categories.map((option) => (
-              <option key={option} value={option}>
-                {option}
+        <div className="home-icon">
+          <a href="/admin/statistics" rel="noopener noreferrer">
+            <p>ESTATÍSTICAS</p>
+          </a>
+        </div>
+      </header>
+
+      <section className="sub-header">
+        <div className="home-icon">
+          <a href="/admin/products/create" rel="noopener noreferrer">
+            <p>ADICIONAR</p>
+          </a>
+        </div>
+
+        <div className="home-icon">
+          <a href="/admin/products" rel="noopener noreferrer">
+            <p>LISTAR</p>
+          </a>
+        </div>
+      </section>
+
+      <section className="products" id="create">
+        <form onSubmit={handleSubmit}>
+          <img src={`${pictureUrl}`} />
+          <label>
+            Imagem:
+            <input type="file" onChange={handleFileChange} />
+          </label>
+          <br />
+          <label>
+            Nome:
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </label>
+          <br />
+          <label>
+            Preço:
+            <input
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              required
+            />
+          </label>
+          <br />
+
+          <label>
+            Categoria:
+            <select
+              value={selectedCategory || ""}
+              onChange={handleCategoryChange}
+            >
+              <option value="" disabled>
+                Selecione a categoria
               </option>
-            ))}
-          </select>
-        </label>
-        <br />
-        <label>
-          Ingrediente:
-          <select
-            value={selectedIngredient?.id || ""}
-            onChange={handleIngredientChange}
-          >
-            <option value="" disabled>
-              Selecione um ingrediente
-            </option>
-            {ingredientsOptions.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.name}
+              {categories.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </label>
+          <br />
+          <label>
+            Ingrediente:
+            <select
+              value={selectedIngredient?.id || ""}
+              onChange={handleIngredientChange}
+            >
+              <option value="" disabled>
+                Selecione um ingrediente
               </option>
-            ))}
-          </select>
-        </label>
-        <br />
-        <button type="button" onClick={addIngredient}>
-          Adicionar
-        </button>
-        <button type="submit">Criar</button>
-      </form>
+              {ingredientsOptions.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <br />
+          <button type="button" onClick={addIngredient}>
+            Adicionar
+          </button>
+          <button type="submit">Criar</button>
+        </form>
 
-      <h2>Selected Ingredients</h2>
-      <ul>
-        {ingredients.map((ingredient) => (
-          <li key={ingredient.id}>
-            {ingredient.name}{" "}
-            <button onClick={() => removeIngredient(ingredient.id)}>
-              Remove
-            </button>
-          </li>
-        ))}
-      </ul>
+        <h2>Selected Ingredients</h2>
+        <ul>
+          {ingredients.map((ingredient) => (
+            <li key={ingredient.id}>
+              {ingredient.name}{" "}
+              <button onClick={() => removeIngredient(ingredient.id)}>
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
+      </section>
     </>
   );
 }
