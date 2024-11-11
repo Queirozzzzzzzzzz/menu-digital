@@ -48,7 +48,7 @@ export default function EditProduct() {
     fetch(`/api/v1/products/${productId}`)
       .then((res) => {
         if (res.status !== 200) {
-          router.push("/");
+          router.push("/admin/products");
           return null;
         }
 
