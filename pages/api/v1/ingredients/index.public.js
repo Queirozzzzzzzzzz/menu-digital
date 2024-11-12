@@ -69,7 +69,6 @@ async function postHandler(req, res) {
         key: "name",
       });
     }
-
     throw err;
   } finally {
     transaction.release();

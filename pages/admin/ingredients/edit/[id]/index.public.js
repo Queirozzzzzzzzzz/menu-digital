@@ -44,16 +44,18 @@ export default function EditIngredient() {
     e.preventDefault();
 
     try {
+      let reqBody = {
+        name,
+        ...(value && { value }),
+        ...(price && { price }),
+      };
+
       const res = await fetch(`/api/v1/ingredients/${ingredientId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          name: name,
-          value: value,
-          price: price,
-        }),
+        body: JSON.stringify(reqBody),
       });
 
       if (res.status == 200) {
@@ -97,30 +99,32 @@ export default function EditIngredient() {
             />
           </label>
           <br />
-          <label>
-            Preço:
-            <input
-              type="number"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              required
-            />
-          </label>
-          <br />
 
-          <label>
-            Valor:
-            <input
-              type="number"
-              value={value}
-              onChange={(e) => {
-                const inputValue = e.target.value;
-                const filteredValue = inputValue.replace(/[^0-9]/g, "");
-                setValue(filteredValue);
-              }}
-              required
-            />
-          </label>
+          {price !== null && value !== null && (
+            <>
+              <label>
+                Preço:
+                <input
+                  type="number"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                />
+              </label>
+              <br />
+              <label>
+                Valor:
+                <input
+                  type="number"
+                  value={value}
+                  onChange={(e) => {
+                    const inputValue = e.target.value;
+                    const filteredValue = inputValue.replace(/[^0-9]/g, "");
+                    setValue(filteredValue);
+                  }}
+                />
+              </label>
+            </>
+          )}
 
           <br />
           <button type="submit">Atualizar</button>

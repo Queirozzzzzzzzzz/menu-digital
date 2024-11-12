@@ -13,7 +13,7 @@ export default function Home() {
     }
 
     if (router && user && !isLoading) {
-      router.push(`/admin/orders`);
+      router.push(`/admin/orders/pending`);
     }
   }, [user, router, isLoading]);
 

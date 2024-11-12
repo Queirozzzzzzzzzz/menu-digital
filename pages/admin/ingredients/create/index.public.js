@@ -22,21 +22,26 @@ export default function CreateIngredient() {
     e.preventDefault();
 
     try {
+      let reqBody = {
+        name,
+        ...(value && { value }),
+        ...(price && { price }),
+      };
+
       const res = await fetch("/api/v1/ingredients", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          name: name,
-          value: value,
-          price: price,
-        }),
+        body: JSON.stringify(reqBody),
       });
 
       if (res.status == 201) {
         alert("Ingrediente criado com sucesso");
         location.reload();
+      } else {
+        const resBody = await res.json();
+        alert(resBody.message);
       }
     } catch (err) {
       console.error("Error submiting form: ", err);
@@ -81,7 +86,6 @@ export default function CreateIngredient() {
               type="number"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              required
             />
           </label>
           <br />
@@ -96,7 +100,6 @@ export default function CreateIngredient() {
                 const filteredValue = inputValue.replace(/[^0-9]/g, "");
                 setValue(filteredValue);
               }}
-              required
             />
           </label>
 

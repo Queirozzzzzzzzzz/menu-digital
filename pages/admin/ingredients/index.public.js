@@ -63,8 +63,10 @@ export default function Ingredients() {
               <div className="info">
                 <p className="text">
                   Nome: {ingredient.name} <br />
-                  Valor: {ingredient.value} <br />
-                  Preço: {ingredient.price} <br />
+                  {ingredient.value && (
+                    <span>Valor: {ingredient.value}</span>
+                  )}{" "}
+                  {ingredient.price && <span>Preço: {ingredient.price}</span>}{" "}
                 </p>
                 <button
                   className="btn"

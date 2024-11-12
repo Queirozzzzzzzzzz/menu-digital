@@ -6,8 +6,9 @@
   --transparent-black: #0000002f;
   --secondary-color: #caba9c;
   --text-color: whitesmoke;
-  --red-color: rgb(165, 0, 0);
+  --no-color: rgb(165, 0, 0);
   --yellow-color: rgb(255, 230, 0);
+  --yes-color: rgb(0, 88, 0);
 }
 
 * {
@@ -264,7 +265,7 @@ ul.menu-navigation .item-content {
 }
 
 .remove-product-button {
-  background-color: var(--red-color);
+  background-color: var(--no-color);
   height: 1rem;
   width: 30%;
   margin-bottom: 1rem;
@@ -355,7 +356,7 @@ ul.menu-navigation .item-content {
 }
 
 .clear-btn {
-  background-color: var(--red-color);
+  background-color: var(--no-color);
   width: 90vw;
   margin-left: 5vw;
   height: auto;
@@ -415,7 +416,7 @@ ul.menu-navigation .item-content {
 
 .card-1.missing,
 .card-1.disabled {
-  background-color: var(--red-color);
+  background-color: var(--no-color);
 }
 
 .card-1.missing {
@@ -513,5 +514,53 @@ ul.menu-navigation .item-content {
 
   .login button {
     margin-top: 1rem;
+  }
+
+  .orders .card-1 {
+    background-color: var(--secondary-color);
+  }
+
+  .orders .order-card .order-info .ingredient {
+    margin-left: 1rem;
+  }
+
+  .removed {
+    text-decoration: line-through;
+  }
+
+  .orders .order-card .order-info,
+  .orders .order-card {
+    display: flex;
+    flex-direction: column;
+    width: 20vw;
+    align-items: start;
+    justify-content: start;
+  }
+
+  .orders .order-card .order-info {
+    align-items: start;
+    margin-top: 1rem;
+    background-color: var(--secondary-color);
+    padding: 1rem;
+    border-radius: 0.25rem;
+  }
+
+  .orders .order-card .order-actions {
+    width: 100%;
+    display: flex;
+  }
+
+  .orders .order-card .accept-button,
+  .orders .order-card .reject-button {
+    margin: 0 0.5rem 0 0.5rem;
+    width: 100%;
+  }
+
+  .orders .order-card .accept-button {
+    background-color: var(--yes-color);
+  }
+
+  .orders .order-card .reject-button {
+    background-color: var(--no-color);
   }
 }

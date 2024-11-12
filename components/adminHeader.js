@@ -5,7 +5,7 @@ const AdminHeader = () => {
     <header className="admin-header">
       <nav>
         <div className="menu-item">
-          <a href="/admin/orders" rel="noopener noreferrer">
+          <a href="/admin/orders/pending" rel="noopener noreferrer">
             <p>PEDIDOS</p>
           </a>
         </div>

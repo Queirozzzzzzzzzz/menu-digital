@@ -70,9 +70,43 @@ async function setIngredients(id, values, options = {}) {
 async function listByStatus(status = [], options = {}) {
   const query = {
     text: `
-    SELECT *
-    FROM orders
-    WHERE status = ANY($1);
+    SELECT 
+      o.*,
+      COALESCE(
+        (SELECT json_agg(
+          json_build_object(
+            'name', p.name,
+            'price', p.price
+          )
+        )
+        FROM products p
+        WHERE p.id = o.product_id),
+        '[]'
+      ) AS product,
+      COALESCE(
+        (SELECT json_agg(
+          json_build_object(
+            'name', i.name,
+            'multiplied', ai.multiplied,
+            'price', ai.price
+          )
+        )
+        FROM additional_ingredients ai
+        JOIN ingredients i ON i.id = ai.ingredient_id
+        WHERE ai.order_id = o.id),
+        '[]'
+      ) AS additional_ingredients,
+      COALESCE(
+        (SELECT json_agg(
+          json_build_object('name', ri.name)
+        )
+        FROM removed_ingredients r
+        JOIN ingredients ri ON ri.id = r.ingredient_id
+        WHERE r.order_id = o.id),
+        '[]'
+      ) AS removed_ingredients
+    FROM orders o
+    WHERE o.status = ANY($1);
     `,
     values: [status],
   };
