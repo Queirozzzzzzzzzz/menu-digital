@@ -35,26 +35,28 @@ export default function signup() {
 
   return (
     <>
-      <h1>Login</h1>
-      <form onSubmit={signinOnSubmit}>
-        <label htmlFor="username">Username</label>
-        <input
-          type="text"
-          name="username"
-          ref={usernameRef}
-          autoComplete="off"
-          autoCorrect="off"
-        ></input>
-        <label htmlFor="password">Senha</label>
-        <input
-          type="password"
-          name="password"
-          ref={passwordRef}
-          autoComplete="off"
-          autoCorrect="off"
-        ></input>
-        <button type="submit">Entrar</button>
-      </form>
+      <section className="login">
+        <h1>Login</h1>
+        <form onSubmit={signinOnSubmit}>
+          <input
+            type="text"
+            name="username"
+            placeholder="Usuário"
+            ref={usernameRef}
+            autoComplete="off"
+            autoCorrect="off"
+          ></input>
+          <input
+            type="password"
+            name="password"
+            placeholder="Senha"
+            ref={passwordRef}
+            autoComplete="off"
+            autoCorrect="off"
+          ></input>
+          <button type="submit">Entrar</button>
+        </form>
+      </section>
     </>
   );
 }
