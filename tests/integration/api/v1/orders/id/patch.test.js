@@ -49,7 +49,7 @@ describe("PATCH to /api/v1/orders/[id]", () => {
       const testOrder = await orchestrator.createOrder({
         product_id: testProduct.id,
       });
-      const reqB = new RequestBuilder(`/api/v1/orders/${testOrder.id}`);
+      const reqB = new RequestBuilder(`/api/v1/orders/${testOrder.order_id}`);
       await reqB.buildAdmin();
 
       const values = {

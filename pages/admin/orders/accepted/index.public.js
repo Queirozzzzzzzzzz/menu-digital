@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "pages/interface";
 import AdminHeader from "components/adminHeader";
 
-export default function PendingOrders() {
+export default function AcceptedOrders() {
   const router = useRouter();
   const { user, isLoading } = useUser();
 
@@ -14,13 +14,11 @@ export default function PendingOrders() {
     if (router && !user && !isLoading) {
       router.push(`/login`);
     }
-
-    if (router && user) fetchOrders();
   }, [user, router, isLoading]);
 
   const fetchOrders = async () => {
     try {
-      const res = await fetch("/api/v1/orders?order_status=pending");
+      const res = await fetch("/api/v1/orders?order_status=accepted");
       const data = await res.json();
 
       let updatedData = [];
@@ -103,40 +101,18 @@ export default function PendingOrders() {
     fetchOrders();
   }, []);
 
-  const handleAccept = async (orderId) => {
+  const handleFinish = async (orderId) => {
     try {
       const res = await fetch(`/api/v1/orders/${orderId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ order_status: ["accepted"] }),
+        body: JSON.stringify({ order_status: ["finished"] }),
       });
 
-      if (res.status == 200) {
-        fetchOrders();
-      } else {
-        const resBody = await res.json();
-        alert(resBody.message);
-      }
-    } catch (err) {
-      console.error("Error submiting form: ", err);
-    }
-  };
-
-  const handleReject = async (orderId) => {
-    try {
-      const res = await fetch(`/api/v1/orders/${orderId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ order_status: ["declined"] }),
-      });
-
-      if (res.status == 200) {
-        alert("Pedido negado com sucesso.");
-        fetchOrders();
+      if (res.status == 201) {
+        console.log("eae");
       } else {
         const resBody = await res.json();
         alert(resBody.message);
@@ -186,21 +162,13 @@ export default function PendingOrders() {
                       {product.name}
                       <br />
                       {product.additional_ingredients &&
-                        product.additional_ingredients.length > 0 && (
-                          <>
-                            <h5>Adicionais</h5>
-                            {product.additional_ingredients.map(
-                              (i, ingredientIndex) => (
-                                <div
-                                  key={ingredientIndex}
-                                  className="ingredient"
-                                >
-                                  {i.multiplied}x {i.name}
-                                  <br />
-                                </div>
-                              ),
-                            )}
-                          </>
+                        product.additional_ingredients.map(
+                          (i, ingredientIndex) => (
+                            <div key={ingredientIndex} className="ingredient">
+                              {"- "} {i.multiplied}x {i.name}
+                              <br />
+                            </div>
+                          ),
                         )}
 
                       {product.removed_ingredients &&
@@ -221,16 +189,10 @@ export default function PendingOrders() {
                 </p>
                 <div className="order-actions">
                   <button
-                    className="accept-button"
-                    onClick={() => handleAccept(o.order_id)}
+                    className="finish-button"
+                    onClick={() => handleFinish(o.order_id)}
                   >
-                    ACEITAR
-                  </button>
-                  <button
-                    className="reject-button"
-                    onClick={() => handleReject(o.order_id)}
-                  >
-                    NEGAR
+                    FINALIZAR
                   </button>
                 </div>
               </div>

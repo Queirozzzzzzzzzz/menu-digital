@@ -6,7 +6,7 @@ import order from "models/order";
 import authorization from "models/authorization";
 import authentication from "models/authentication";
 import db from "infra/database";
-import { ValidationError } from "errors";
+import { NotFoundError } from "errors";
 
 export default nextConnect({
   attachParams: true,
@@ -24,7 +24,7 @@ export default nextConnect({
 
 async function patchValidationHandler(req, res, next) {
   const cleanQueryValues = validator(req.query, {
-    id: "required",
+    order_id: "required",
   });
 
   const cleanBodyValues = validator(req.body, {
@@ -45,9 +45,13 @@ async function patchHandler(req, res) {
   try {
     transaction.query("BEGIN");
 
-    newOrder = await order.setStatus(req.query.id, req.body.order_status, {
-      transaction,
-    });
+    newOrder = await order.setStatus(
+      req.query.order_id,
+      req.body.order_status,
+      {
+        transaction,
+      },
+    );
 
     transaction.query("COMMIT");
   } catch (err) {

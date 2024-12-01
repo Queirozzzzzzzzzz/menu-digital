@@ -95,6 +95,7 @@ async function createAdmin() {
     password: "12345678",
     features: ["admin"],
   });
+
   await addFeaturesToUser(userObj, ["admin"]);
 
   const newUserObj = await user.findByUsername("admin");
@@ -143,7 +144,7 @@ async function createIngredient(values = {}) {
 
 async function createOrder(values = {}) {
   const info = {
-    order_id: values.order_id || "02894-0294",
+    order_id: values.order_id || getFakeOrderId(),
     product_id: values.product_id,
     price: values.price || 47.27,
     table_number: values.table_number || 12,
@@ -155,13 +156,14 @@ async function createOrder(values = {}) {
   let orderObj = await order.create(info);
 
   if (values.status)
-    orderObj = await setOrderStatus(orderObj.id, [values.status]);
+    orderObj = await setOrderStatus(orderObj.order_id, [values.status]);
 
-  return await orderObj;
+  return orderObj;
 }
 
 async function setOrderStatus(id, status = []) {
-  return await order.setStatus(id, status);
+  const newOrder = await order.setStatus(id, status);
+  return newOrder;
 }
 
 // Functions
@@ -188,6 +190,12 @@ function parseSetCookies(res) {
     map: true,
   });
   return parsedCookies;
+}
+
+function getFakeOrderId() {
+  const part1 = Math.floor(10000 + Math.random() * 90000).toString();
+  const part2 = Math.floor(1000 + Math.random() * 9000).toString();
+  return `${part1}-${part2}`;
 }
 
 const orchestrator = {

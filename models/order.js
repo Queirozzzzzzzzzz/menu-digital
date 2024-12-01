@@ -16,6 +16,7 @@ async function create(values, options = {}) {
       values.observation,
     ],
   };
+
   const res = await db.query(query, { transaction: options.transaction });
 
   return res.rows[0];
@@ -165,15 +166,15 @@ async function findById(id, options = {}) {
   return res.rows[0];
 }
 
-async function setStatus(id, status = [], options = {}) {
+async function setStatus(orderId, status = [], options = {}) {
   const query = {
     text: `
     UPDATE orders
     SET status = $2
-    WHERE id = $1
+    WHERE order_id = $1
     RETURNING *;
     `,
-    values: [id, status[0]],
+    values: [orderId, status[0]],
   };
 
   const res = await db.query(query, { transaction: options.transaction });
@@ -181,7 +182,7 @@ async function setStatus(id, status = [], options = {}) {
   if (res.rowCount === 0) {
     throw new NotFoundError({
       message: `O pedido não foi encontrado no sistema.`,
-      action: 'Verifique se o "id" do pedido está digitado corretamente.',
+      action: 'Verifique se o "order_id" do pedido está digitado corretamente.',
       stack: new Error().stack,
     });
   }

@@ -37,7 +37,12 @@ async function getValidationHandler(req, res, next) {
 }
 
 async function getHandler(req, res) {
-  const orders = await order.listByStatus(req.query.order_status);
+  let orders = [];
+  try {
+    orders = await order.listByStatus(req.query.order_status);
+  } catch (err) {
+    throw err;
+  }
 
   return res.status(200).json(orders);
 }
@@ -77,6 +82,7 @@ async function postHandler(req, res) {
       const newOrder = await order.create(o, { transaction });
       await order.setIngredients(newOrder.id, o, { transaction });
       const updatedOrder = await order.findById(newOrder.id, { transaction });
+
       createdOrders.push(updatedOrder);
     }
 

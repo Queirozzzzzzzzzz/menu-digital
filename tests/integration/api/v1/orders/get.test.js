@@ -35,18 +35,8 @@ describe("GET to /api/v1/orders", () => {
       await orchestrator.dropAllTables();
       await orchestrator.runPendingMigrations();
 
-      const product = await orchestrator.createProduct();
-      const statuses = ["pending", "accepted", "declined", "finished"];
-      await Promise.all(
-        statuses.map((status) =>
-          orchestrator.createOrder({
-            status,
-            product_id: product.id,
-          }),
-        ),
-      );
+      const ordersInDb = await createOrders();
 
-      const ordersInDb = await db.query("SELECT * FROM orders;");
       expect(ordersInDb.rows.length).toBe(4);
     });
 
@@ -145,3 +135,18 @@ describe("GET to /api/v1/orders", () => {
     });
   });
 });
+
+async function createOrders() {
+  const statuses = ["pending", "accepted", "declined", "finished"];
+  const product = await orchestrator.createProduct();
+  for (const status of statuses) {
+    await orchestrator.createOrder({
+      status,
+      product_id: product.id,
+    });
+  }
+
+  const ordersInDb = await db.query("SELECT * FROM orders;");
+
+  return ordersInDb;
+}
