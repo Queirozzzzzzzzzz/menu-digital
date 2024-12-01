@@ -199,7 +199,6 @@ export default function PendingOrders() {
                             )}
                           </>
                         )}
-
                       {product.removed_ingredients &&
                         product.removed_ingredients.map(
                           (i, ingredientIndex) => (
@@ -215,6 +214,8 @@ export default function PendingOrders() {
                     </div>
                   ))}
                   {o.observation && <span>Observação: {o.observation}</span>}
+                  <h4>Total</h4>
+                  {"R$ "} {parseFloat(o.price).toFixed(2)}
                 </p>
                 <div className="order-actions">
                   <button

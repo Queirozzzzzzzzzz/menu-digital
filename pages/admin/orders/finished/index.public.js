@@ -174,6 +174,8 @@ export default function AcceptedOrders() {
                     </div>
                   ))}
                   {o.observation && <span>Observação: {o.observation}</span>}
+                  <h4>Total</h4>
+                  {"R$ "} {parseFloat(o.price).toFixed(2)}
                 </p>
               </div>
             </div>
