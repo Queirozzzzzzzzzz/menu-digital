@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { useUser } from "pages/interface";
 
@@ -39,11 +40,17 @@ export default function Table() {
         return;
       } else {
         const resBody = await res.json();
-        alert(resBody.message);
+        toast.error(resBody.message, {
+          className: "alert error",
+          duration: 2000,
+        });
       }
     } catch (err) {
       console.error(err);
-      alert(err.message);
+      toast.error(err.message, {
+        className: "alert error",
+        duration: 2000,
+      });
     }
   };
 

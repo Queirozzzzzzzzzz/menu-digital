@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { useUser } from "pages/interface";
 
@@ -54,14 +55,17 @@ export default function Cart() {
   }
 
   const handleOrderClear = () => {
-    saveToLocalStorage([])
-    setProducts([])
-    setTotal(0)
-  }
+    saveToLocalStorage([]);
+    setProducts([]);
+    setTotal(0);
+  };
 
   const handleOrderSubmit = async () => {
     if (products.length <= 0) {
-      alert("Adicione ao menos um produto ao carrinho!")
+      toast("Adicione ao menos um produto ao carrinho.", {
+        className: "alert warn",
+        duration: 2000,
+      });
       return;
     }
 
@@ -75,14 +79,16 @@ export default function Cart() {
         order_id: order_id,
         product_id: p.id,
         price: p.total,
-        observation: p.observation
+        observation: p.observation,
       };
 
-      const additionalIngredients = getAdditionalIngredients(p.ingredients)
-      if (additionalIngredients.length > 0) order = { ...order, additional_ingredients: additionalIngredients }
+      const additionalIngredients = getAdditionalIngredients(p.ingredients);
+      if (additionalIngredients.length > 0)
+        order = { ...order, additional_ingredients: additionalIngredients };
 
-      const removedIngredients = getRemovedIngredients(p.ingredients)
-      if (removedIngredients.length > 0) order = { ...order, removed_ingredients: removedIngredients }
+      const removedIngredients = getRemovedIngredients(p.ingredients);
+      if (removedIngredients.length > 0)
+        order = { ...order, removed_ingredients: removedIngredients };
 
       orders.push(order);
     }
@@ -159,11 +165,11 @@ export default function Cart() {
       ingredients: product.ingredients.map((i) =>
         i.tempId === ingredientTempId
           ? {
-            ...i,
-            multipliedValue: multipliedValue,
-            multiplied: multiplied,
-            extraPrice: extraPrice,
-          }
+              ...i,
+              multipliedValue: multipliedValue,
+              multiplied: multiplied,
+              extraPrice: extraPrice,
+            }
           : i,
       ),
     };

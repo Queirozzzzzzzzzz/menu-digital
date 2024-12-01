@@ -64,7 +64,6 @@ export default function EditIngredient() {
           className: "alert success",
           duration: 2000,
         });
-        clearInputs();
       } else {
         const resBody = await res.json();
         toast.error(resBody.message, {

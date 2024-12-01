@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { useUser } from "pages/interface";
 import AdminHeader from "components/adminHeader";
@@ -38,6 +39,20 @@ export default function CreateProduct() {
     }
   };
 
+  function clearFields() {
+    setName("");
+    setPictureUrl("");
+    setIngredients([]);
+    setSelectedIngredient(null);
+    setSelectedCategory(null);
+    setPrice("");
+
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput) {
+      fileInput.value = "";
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -59,8 +74,17 @@ export default function CreateProduct() {
       });
 
       if (res.status == 201) {
-        alert("Produto criado com sucesso");
-        location.reload();
+        toast.success("Produto criado com sucesso!", {
+          className: "alert success",
+          duration: 2000,
+        });
+        clearFields();
+      } else {
+        const resBody = await res.json();
+        toast.error(resBody.message, {
+          className: "alert error",
+          duration: 2000,
+        });
       }
     } catch (err) {
       console.error("Error submiting form: ", err);
@@ -118,7 +142,10 @@ export default function CreateProduct() {
       return resBody.data.url;
     } else {
       console.error(resBody);
-      alert("Falha ao salvar imagem. Verifique o tamanho/formato.");
+      toast.error("Falha ao salvar imagem. Verifique o tamanho/formato.", {
+        className: "alert error",
+        duration: 2000,
+      });
       return;
     }
   }

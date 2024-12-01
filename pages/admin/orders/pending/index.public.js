@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { useUser } from "pages/interface";
 import AdminHeader from "components/adminHeader";
@@ -110,11 +111,17 @@ export default function PendingOrders() {
       });
 
       if (res.status == 200) {
-        alert("Pedido aceito com sucesso.");
+        toast.success("Pedido aceito com sucesso!", {
+          className: "alert success",
+          duration: 2000,
+        });
         fetchOrders();
       } else {
         const resBody = await res.json();
-        alert(resBody.message);
+        toast.error(resBody.message, {
+          className: "alert error",
+          duration: 2000,
+        });
       }
     } catch (err) {
       console.error("Error submiting form: ", err);
@@ -132,11 +139,17 @@ export default function PendingOrders() {
       });
 
       if (res.status == 200) {
-        alert("Pedido negado com sucesso.");
+        toast.success("Pedido negado com sucesso!", {
+          className: "alert success",
+          duration: 2000,
+        });
         fetchOrders();
       } else {
         const resBody = await res.json();
-        alert(resBody.message);
+        toast.error(resBody.message, {
+          className: "alert error",
+          duration: 2000,
+        });
       }
     } catch (err) {
       console.error("Error submiting form: ", err);

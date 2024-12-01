@@ -40,23 +40,29 @@ export default function Category() {
   }, [router.query.category]);
 
   if (isLoading || loading) {
-    return <>
-      <header className="user-header">
-        <div className="home-icon">
-          <a href="/menu" rel="noopener noreferrer">
-            <img id="home-icon-img" src="/static/svg/home.svg" alt="home"></img>
-          </a>
-        </div>
+    return (
+      <>
+        <header className="user-header">
+          <div className="home-icon">
+            <a href="/menu" rel="noopener noreferrer">
+              <img
+                id="home-icon-img"
+                src="/static/svg/home.svg"
+                alt="home"
+              ></img>
+            </a>
+          </div>
 
-        <div className="cart-icon">
-          <a href="/cart" rel="noopener noreferrer">
-            <img src="/static/svg/cart.svg" alt="cart"></img>
-          </a>
-        </div>
-      </header>
+          <div className="cart-icon">
+            <a href="/cart" rel="noopener noreferrer">
+              <img src="/static/svg/cart.svg" alt="cart"></img>
+            </a>
+          </div>
+        </header>
 
-      <div>Carregando...</div>
-    </>;
+        <div>Carregando...</div>
+      </>
+    );
   }
 
   if (error) {
@@ -76,7 +82,7 @@ export default function Category() {
       </header>
 
       <div className="error">{error}</div>
-    </>
+    </>;
   }
 
   const handleProductAdd = async (productId) => {
@@ -131,7 +137,17 @@ export default function Category() {
           >
             {index % 2 === 0 ? (
               <>
-                <img src={product.picture} />
+                <div className="image-container">
+                  <img
+                    src={product.picture}
+                    className={product.status === "missing" ? "missing" : ""}
+                    alt="Product"
+                  />
+                  {product.status === "missing" && (
+                    <span className="missing-text">Em falta</span>
+                  )}
+                </div>
+
                 <div className="info">
                   <h1 className="title">{product.name}</h1>
                   <p className="text">
@@ -169,7 +185,17 @@ export default function Category() {
                     Adicionar
                   </button>
                 </div>
-                <img src={product.picture} />
+
+                <div className="image-container">
+                  <img
+                    src={product.picture}
+                    className={product.status === "missing" ? "missing" : ""}
+                    alt="Product"
+                  />
+                  {product.status === "missing" && (
+                    <span className="missing-text">Em falta</span>
+                  )}
+                </div>
               </>
             )}
           </div>
