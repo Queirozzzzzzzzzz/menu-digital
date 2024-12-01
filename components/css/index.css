@@ -423,6 +423,20 @@ ul.menu-navigation .item-content {
   background-color: var(--yellow-color);
 }
 
+.alert {
+  border: none;
+  border-radius: 0;
+  background-color: whitesmoke;
+}
+
+.alert.error {
+  color: red;
+}
+
+.alert.success {
+  color: green;
+}
+
 /* Tablet */
 @media (min-width: 481px) and (max-width: 767px) {
 }

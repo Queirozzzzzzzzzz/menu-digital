@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { useUser } from "pages/interface";
 import AdminHeader from "components/adminHeader";
@@ -17,6 +18,12 @@ export default function CreateIngredient() {
       router.push(`/login`);
     }
   }, [user, router, isLoading]);
+
+  function clearInputs() {
+    setName("");
+    setValue("");
+    setPrice("");
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,11 +44,17 @@ export default function CreateIngredient() {
       });
 
       if (res.status == 201) {
-        alert("Ingrediente criado com sucesso");
-        location.reload();
+        toast.success("Ingrediente criado com sucesso!", {
+          className: "alert success",
+          duration: 2000,
+        });
+        clearInputs();
       } else {
         const resBody = await res.json();
-        alert(resBody.message);
+        toast.error(resBody.message, {
+          className: "alert error",
+          duration: 2000,
+        });
       }
     } catch (err) {
       console.error("Error submiting form: ", err);
