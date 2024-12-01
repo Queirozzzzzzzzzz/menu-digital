@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { useUser } from "pages/interface";
 import AdminHeader from "components/adminHeader";
@@ -59,8 +60,17 @@ export default function EditIngredient() {
       });
 
       if (res.status == 200) {
-        alert("Ingrediente atualizado com sucesso");
-        location.reload();
+        toast.success("Ingrediente atualizado com sucesso!", {
+          className: "alert success",
+          duration: 2000,
+        });
+        clearInputs();
+      } else {
+        const resBody = await res.json();
+        toast.error(resBody.message, {
+          className: "alert error",
+          duration: 2000,
+        });
       }
     } catch (err) {
       console.error("Error submiting form: ", err);
@@ -127,6 +137,7 @@ export default function EditIngredient() {
           )}
 
           <br />
+
           <button type="submit">Atualizar</button>
         </form>
       </section>
