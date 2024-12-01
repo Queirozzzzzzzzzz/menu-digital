@@ -99,10 +99,6 @@ export default function PendingOrders() {
     }
   };
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
   const handleAccept = async (orderId) => {
     try {
       const res = await fetch(`/api/v1/orders/${orderId}`, {
@@ -114,6 +110,7 @@ export default function PendingOrders() {
       });
 
       if (res.status == 200) {
+        alert("Pedido aceito com sucesso.");
         fetchOrders();
       } else {
         const resBody = await res.json();
@@ -165,7 +162,7 @@ export default function PendingOrders() {
           </div>
 
           <div className="menu-item">
-            <a href="/admin/orders/accepted" rel="noopener noreferrer">
+            <a href="/admin/orders/finished" rel="noopener noreferrer">
               <p>FINALIZADOS</p>
             </a>
           </div>

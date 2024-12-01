@@ -14,6 +14,8 @@ export default function AcceptedOrders() {
     if (router && !user && !isLoading) {
       router.push(`/login`);
     }
+
+    if (router && user) fetchOrders();
   }, [user, router, isLoading]);
 
   const fetchOrders = async () => {
@@ -97,10 +99,6 @@ export default function AcceptedOrders() {
     }
   };
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
   const handleFinish = async (orderId) => {
     try {
       const res = await fetch(`/api/v1/orders/${orderId}`, {
@@ -111,8 +109,9 @@ export default function AcceptedOrders() {
         body: JSON.stringify({ order_status: ["finished"] }),
       });
 
-      if (res.status == 201) {
-        console.log("eae");
+      if (res.status == 200) {
+        alert("Pedido finalizado com sucesso.");
+        fetchOrders();
       } else {
         const resBody = await res.json();
         alert(resBody.message);
@@ -141,7 +140,7 @@ export default function AcceptedOrders() {
           </div>
 
           <div className="menu-item">
-            <a href="/admin/orders/accepted" rel="noopener noreferrer">
+            <a href="/admin/orders/finished" rel="noopener noreferrer">
               <p>FINALIZADOS</p>
             </a>
           </div>
