@@ -87,7 +87,12 @@ async function getValidationHandler(req, res, next) {
 }
 
 async function getHandler(req, res) {
-  const ingredients = await ingredient.findById(req.query.id);
+  let foundIngredient;
+  try {
+    foundIngredient = await ingredient.findById(req.query.id);
+  } catch (err) {
+    throw err;
+  }
 
-  return res.status(200).json(ingredients);
+  return res.status(200).json(foundIngredient);
 }
