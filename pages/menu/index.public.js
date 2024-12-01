@@ -53,9 +53,6 @@ export default function Menu() {
           <h1 className="text-container">
             CAFÉ GELADO <br /> R$ 74,00
           </h1>
-          <div className="btn-container">
-            <button className="btn cart-btn">Adicionar ao Carrinho</button>
-          </div>
         </div>
       </div>
 
