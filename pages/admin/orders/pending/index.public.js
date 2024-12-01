@@ -224,9 +224,13 @@ export default function PendingOrders() {
                             </div>
                           ),
                         )}
+                      {product.observation && (
+                        <div className="ingredient">
+                          <span>Observação: {product.observation}</span>
+                        </div>
+                      )}
                     </div>
                   ))}
-                  {o.observation && <span>Observação: {o.observation}</span>}
                   <h4>Total</h4>
                   {"R$ "} {parseFloat(o.price).toFixed(2)}
                 </p>

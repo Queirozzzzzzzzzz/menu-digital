@@ -11,6 +11,38 @@ export default function Cart() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [total, setTotal] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState(null);
+
+  const handleObservationButtonClick = (product) => {
+    setCurrentProduct(product);
+    setModalVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setModalVisible(false);
+  };
+
+  const handleObservationSave = (observation) => {
+    let product = products.find((p) => p.tempId === currentProduct.tempId);
+
+    let updatedProduct = {
+      ...product,
+      observation: observation,
+    };
+
+    const updatedProducts = [...products];
+    const index = updatedProducts.findIndex(
+      (p) => p.tempId === currentProduct.tempId,
+    );
+    if (index !== -1) {
+      updatedProducts[index] = updatedProduct;
+    }
+
+    setProducts(updatedProducts);
+    saveToLocalStorage(updatedProducts);
+    setModalVisible(false);
+  };
 
   const saveToLocalStorage = (pProducts) => {
     if (!pProducts) pProducts = products;
@@ -278,7 +310,14 @@ export default function Cart() {
                 <h2>{product.name}</h2>
               </div>
 
-              <button className="observation-button">+ Observação</button>
+              <button
+                className="observation-button"
+                onClick={() => handleObservationButtonClick(product)}
+              >
+                + Observação
+              </button>
+
+              <p className="observation">{product.observation}</p>
 
               <div className="ingredients">
                 {product.ingredients.map((ingredient, i) => (
@@ -381,6 +420,30 @@ export default function Cart() {
           </button>
         </div>
       </section>
+
+      {modalVisible && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>Observação</h2>
+            <textarea
+              placeholder="Escreva sua observação aqui..."
+              defaultValue={currentProduct ? currentProduct.observation : ""}
+              onChange={(e) =>
+                setCurrentProduct({
+                  ...currentProduct,
+                  observation: e.target.value,
+                })
+              }
+            />
+            <button
+              onClick={() => handleObservationSave(currentProduct.observation)}
+            >
+              Salvar
+            </button>
+            <button onClick={handleModalClose}>Fechar</button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
