@@ -14,8 +14,8 @@ export default function Statistics() {
 
   const [orders, setOrders] = useState([]);
   const [isLoadingOrders, setIsLoadingOrders] = useState(true);
-  const [quantityData, setQuantityData] = useState([]);
-  const [quantityFilter, setQuantityFilter] = useState("months");
+  const [orderQuantityData, setOrderQuantityData] = useState([]);
+  const [productQuantityData, setProductQuantityData] = useState([]);
 
   useEffect(() => {
     if (router && !user && !isLoading) {
@@ -111,8 +111,8 @@ export default function Statistics() {
   useEffect(() => {
     if (orders.length <= 0) return;
 
-    // Quantity
-    const countQuantityValues = () => {
+    // Order quantity
+    const countOrderQuantityValues = () => {
       const counts = Array(12).fill(0);
 
       orders.forEach(({ created_at }) => {
@@ -139,16 +139,16 @@ export default function Statistics() {
       return { data: counts, categories: categories };
     };
 
-    const quantityValues = countQuantityValues();
+    const orderQuantityValues = countOrderQuantityValues();
 
-    const quantityOptions = {
+    const orderQuantityOptions = {
       options: {
         chart: {
           type: "line",
           height: 380,
         },
         xaxis: {
-          categories: quantityValues.categories,
+          categories: orderQuantityValues.categories,
         },
         responsive: [
           {
@@ -167,12 +167,59 @@ export default function Statistics() {
       series: [
         {
           name: "Pedidos",
-          data: quantityValues.data,
+          data: orderQuantityValues.data,
         },
       ],
     };
 
-    setQuantityData(quantityOptions);
+    // Product quantity
+    const countProductQuantityValues = () => {
+      const productCounts = {};
+
+      orders.forEach(({ product }) => {
+        product.forEach(({ name }) => {
+          if (productCounts[name]) {
+            productCounts[name]++;
+          } else {
+            productCounts[name] = 1;
+          }
+        });
+      });
+
+      const productNames = Object.keys(productCounts);
+      const productQuantities = Object.values(productCounts);
+
+      return { data: productQuantities, categories: productNames };
+    };
+
+    const productQuantityValues = countProductQuantityValues();
+
+    const productQuantityOptions = {
+      options: {
+        chart: {
+          type: "pie",
+          height: 380,
+        },
+        labels: productQuantityValues.categories,
+        responsive: [
+          {
+            breakpoint: 480,
+            options: {
+              chart: {
+                height: 300,
+              },
+              legend: {
+                position: "bottom",
+              },
+            },
+          },
+        ],
+      },
+      series: productQuantityValues.data,
+    };
+
+    setOrderQuantityData(orderQuantityOptions);
+    setProductQuantityData(productQuantityOptions);
   }, [orders]);
 
   if (isLoading || isLoadingOrders) {
@@ -185,20 +232,39 @@ export default function Statistics() {
 
       <section className="statistics" id="list">
         <h1 className="title">Estatísticas dos Pedidos</h1>
-        {quantityData.options && (
-          <>
-            <div className="chart-container">
-              <h2>Quantidade por mês</h2>
-              <Chart
-                options={quantityData.options}
-                series={quantityData.series}
-                type="bar"
-                height={350}
-                className="chart"
-              />
-            </div>
-          </>
-        )}
+        <div className="charts">
+          {orderQuantityData.options && (
+            <>
+              <div className="charts-card">
+                <p className="chart-title">Pedidos mensais</p>
+                <div id="bar-chart">
+                  <Chart
+                    options={orderQuantityData.options}
+                    series={orderQuantityData.series}
+                    type="bar"
+                    height={350}
+                  />
+                </div>
+              </div>
+            </>
+          )}
+
+          {productQuantityData.options && (
+            <>
+              <div className="charts-card">
+                <p className="chart-title">Vendas por produto</p>
+                <div id="pie-chart">
+                  <Chart
+                    options={productQuantityData.options}
+                    series={productQuantityData.series}
+                    type="pie"
+                    height={350}
+                  />
+                </div>
+              </div>
+            </>
+          )}
+        </div>
       </section>
     </>
   );
