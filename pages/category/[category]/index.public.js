@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { useUser } from "pages/interface";
 
@@ -107,6 +108,10 @@ export default function Category() {
       products.push(product);
 
       localStorage.setItem("products", JSON.stringify(products));
+      toast.success("Produto adicionado ao carrinho.", {
+        className: "alert success",
+        duration: 1000,
+      });
     } catch (error) {
       console.error("Error handling product addition:", error);
     }
