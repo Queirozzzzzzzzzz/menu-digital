@@ -17,6 +17,7 @@ export default function Statistics() {
   const [orderQuantityData, setOrderQuantityData] = useState([]);
   const [productQuantityData, setProductQuantityData] = useState([]);
   const [monthlyRevenueData, setMonthlyRevenueData] = useState([]);
+  const [tableUsageData, setTableUsageData] = useState([]);
 
   useEffect(() => {
     if (router && !user && !isLoading) {
@@ -244,8 +245,47 @@ export default function Statistics() {
       ],
     };
 
+    // Table usage
+    const calculateTableUsage = () => {
+      const tableCounts = {};
+
+      orders.forEach(({ table_number }) => {
+        if (tableCounts[table_number]) {
+          tableCounts[table_number]++;
+        } else {
+          tableCounts[table_number] = 1;
+        }
+      });
+
+      const tableNumbers = Object.keys(tableCounts).map((t) => `Mesa ${t}`);
+      const tableUsages = Object.values(tableCounts);
+
+      return { data: tableUsages, categories: tableNumbers };
+    };
+
+    const tableUsageValues = calculateTableUsage();
+
+    const tableUsageOptions = {
+      options: {
+        chart: {
+          type: "bar",
+          height: 380,
+        },
+        xaxis: {
+          categories: tableUsageValues.categories,
+        },
+      },
+      series: [
+        {
+          name: "Uso das Mesas",
+          data: tableUsageValues.data,
+        },
+      ],
+    };
+
     setOrderQuantityData(orderQuantityOptions);
     setProductQuantityData(productQuantityOptions);
+    setTableUsageData(tableUsageOptions);
     setMonthlyRevenueData(monthlyRevenueOptions);
   }, [orders]);
 
@@ -301,6 +341,22 @@ export default function Statistics() {
                     options={monthlyRevenueData.options}
                     series={monthlyRevenueData.series}
                     type="line"
+                    height={350}
+                  />
+                </div>
+              </div>
+            </>
+          )}
+
+          {tableUsageData.options && (
+            <>
+              <div className="charts-card">
+                <p className="chart-title">Por mesa</p>
+                <div id="bar-chart-tables">
+                  <Chart
+                    options={tableUsageData.options}
+                    series={tableUsageData.series}
+                    type="bar"
                     height={350}
                   />
                 </div>
