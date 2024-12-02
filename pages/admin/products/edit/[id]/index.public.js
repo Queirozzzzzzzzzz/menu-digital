@@ -266,9 +266,9 @@ export default function EditProduct() {
               value={productStatus}
               onChange={(e) => setProductStatus(e.target.value)}
             >
-              <option value="available">Available</option>
-              <option value="missing">Missing</option>
-              <option value="disabled">Disabled</option>
+              <option value="available">Disponível</option>
+              <option value="missing">Em Falta</option>
+              <option value="disabled">Desabilitado</option>
             </select>
           </label>
           <br />
