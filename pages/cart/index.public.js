@@ -110,7 +110,7 @@ export default function Cart() {
       let order = {
         order_id: order_id,
         product_id: p.id,
-        price: p.total,
+        price: total,
         observation: p.observation,
       };
 

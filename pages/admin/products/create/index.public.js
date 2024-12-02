@@ -231,11 +231,12 @@ export default function CreateProduct() {
                 </option>
               ))}
             </select>
+            <button type="button" className="small-btn" onClick={addIngredient}>
+            Adicionar ingrediente
+          </button>
           </label>
           <br />
-          <button type="button" onClick={addIngredient}>
-            Adicionar
-          </button>
+          
           <button type="submit">Criar</button>
         </form>
         <h2>Selected Ingredients</h2>
@@ -243,7 +244,7 @@ export default function CreateProduct() {
           {ingredients.map((ingredient) => (
             <li key={ingredient.id}>
               {ingredient.name}{" "}
-              <button onClick={() => removeIngredient(ingredient.id)}>
+              <button onClick={() => removeIngredient(ingredient.id)} className="small-btn">
                 Remove
               </button>
             </li>
