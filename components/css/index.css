@@ -553,6 +553,40 @@ p.observation {
   margin: .5rem 0 0 0;
 }
 
+.products .grid-layout {
+  width: 25vw;
+}
+
+.products .grid-layout .card-1 {
+  background-color: #0000002f;
+  width: 100%;
+}
+
+.products .info {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.products .info .btn {
+  width: 10vw;
+}
+
+.missing, .disabled {
+  padding-left: 1rem;
+  border-radius: 1rem;
+  width: 100%;
+  text-align: center;
+}
+
+.missing {
+  background-color: var(--yellow-color);
+}
+
+.disabled {
+  background-color: var(--no-color);
+}
+
 .alert {
   border: none;
   border-radius: 0;

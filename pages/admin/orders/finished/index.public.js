@@ -166,7 +166,7 @@ export default function AcceptedOrders() {
                               key={ingredientIndex}
                               className="ingredient removed"
                             >
-                              {"- "} {i.name}
+                              {i.name}
                               <br />
                             </div>
                           ),

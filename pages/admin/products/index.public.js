@@ -84,8 +84,12 @@ export default function Products() {
           <p>Nenhum produto foi encontrado.</p>
         ) : (
           products.map((p) => (
-            <div className={`card-1 ${p.status}`} key={p.id}>
-              <>
+            <>
+            <div className="grid-layout">
+            {p.status === "missing" && <p className="missing">Em Falta</p>}
+              {p.status === "disabled" && <p className="disabled">Desabilitado</p>}
+            <div className={`card-1`} key={p.id}>
+              
                 <img src={p.picture} />
                 <div className="info">
                   <p className="text">
@@ -100,8 +104,10 @@ export default function Products() {
                     Editar
                   </button>
                 </div>
-              </>
+              
             </div>
+            </div>
+            </>
           ))
         )}
       </section>

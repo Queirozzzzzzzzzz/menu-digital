@@ -219,7 +219,7 @@ export default function PendingOrders() {
                               key={ingredientIndex}
                               className="ingredient removed"
                             >
-                              {"- "} {i.name}
+                              {i.name}
                               <br />
                             </div>
                           ),
