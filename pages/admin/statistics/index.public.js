@@ -150,19 +150,6 @@ export default function Statistics() {
         xaxis: {
           categories: orderQuantityValues.categories,
         },
-        responsive: [
-          {
-            breakpoint: 480,
-            options: {
-              chart: {
-                height: 300,
-              },
-              legend: {
-                position: "bottom",
-              },
-            },
-          },
-        ],
       },
       series: [
         {
@@ -201,19 +188,9 @@ export default function Statistics() {
           height: 380,
         },
         labels: productQuantityValues.categories,
-        responsive: [
-          {
-            breakpoint: 480,
-            options: {
-              chart: {
-                height: 300,
-              },
-              legend: {
-                position: "bottom",
-              },
-            },
-          },
-        ],
+        legend: {
+          position: "bottom",
+        },
       },
       series: productQuantityValues.data,
     };
