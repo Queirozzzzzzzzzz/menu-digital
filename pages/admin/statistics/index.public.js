@@ -16,6 +16,7 @@ export default function Statistics() {
   const [isLoadingOrders, setIsLoadingOrders] = useState(true);
   const [orderQuantityData, setOrderQuantityData] = useState([]);
   const [productQuantityData, setProductQuantityData] = useState([]);
+  const [monthlyRevenueData, setMonthlyRevenueData] = useState([]);
 
   useEffect(() => {
     if (router && !user && !isLoading) {
@@ -195,8 +196,57 @@ export default function Statistics() {
       series: productQuantityValues.data,
     };
 
+    // Monthly revenue
+    const calculateMonthlyRevenue = () => {
+      const revenueByMonth = Array(12).fill(0);
+
+      orders.forEach(({ created_at, price }) => {
+        const date = new Date(created_at);
+        const month = date.getMonth();
+        revenueByMonth[month] += parseFloat(price);
+      });
+
+      const categories = [
+        "Janeiro",
+        "Fevereiro",
+        "Março",
+        "Abril",
+        "Maio",
+        "Junho",
+        "Julho",
+        "Agosto",
+        "Setembro",
+        "Outubro",
+        "Novembro",
+        "Dezembro",
+      ];
+
+      return { data: revenueByMonth, categories };
+    };
+
+    const monthlyRevenueValues = calculateMonthlyRevenue();
+
+    const monthlyRevenueOptions = {
+      options: {
+        chart: {
+          type: "line",
+          height: 380,
+        },
+        xaxis: {
+          categories: monthlyRevenueValues.categories,
+        },
+      },
+      series: [
+        {
+          name: "Receita",
+          data: monthlyRevenueValues.data,
+        },
+      ],
+    };
+
     setOrderQuantityData(orderQuantityOptions);
     setProductQuantityData(productQuantityOptions);
+    setMonthlyRevenueData(monthlyRevenueOptions);
   }, [orders]);
 
   if (isLoading || isLoadingOrders) {
@@ -235,6 +285,22 @@ export default function Statistics() {
                     options={productQuantityData.options}
                     series={productQuantityData.series}
                     type="pie"
+                    height={350}
+                  />
+                </div>
+              </div>
+            </>
+          )}
+
+          {monthlyRevenueData.options && (
+            <>
+              <div className="charts-card">
+                <p className="chart-title">Receita Mensal</p>
+                <div id="line-chart">
+                  <Chart
+                    options={monthlyRevenueData.options}
+                    series={monthlyRevenueData.series}
+                    type="line"
                     height={350}
                   />
                 </div>
