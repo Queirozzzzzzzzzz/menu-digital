@@ -18,6 +18,13 @@ export default function CreateProduct() {
   const categories = ["coffees", "sweets", "snacks", "teas"];
   const [selectedCategory, setSelectedCategory] = useState(null);
 
+  const categoryMapping = {
+    coffees: "Cafés",
+    sweets: "Doces",
+    snacks: "Lanches",
+    teas: "Chás",
+  };
+
   useEffect(() => {
     if (router && !user && !isLoading) {
       router.push(`/login`);
@@ -210,7 +217,7 @@ export default function CreateProduct() {
               </option>
               {categories.map((option) => (
                 <option key={option} value={option}>
-                  {option}
+                  {categoryMapping[option]}
                 </option>
               ))}
             </select>

@@ -16,9 +16,16 @@ export default function EditProduct() {
   const [ingredients, setIngredients] = useState([]);
   const [ingredientsOptions, setIngredientsOptions] = useState([]);
   const [selectedIngredient, setSelectedIngredient] = useState(null);
-  const [categoriesOptions, setCategoriesOptions] = useState([]);
+  const [categoriesOptions, setCategoriesOptions] = useState(["coffees", "sweets", "snacks", "teas"]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [productStatus, setProductStatus] = useState("available");
+
+  const categoryMapping = {
+    coffees: "Cafés",
+    sweets: "Doces",
+    snacks: "Lanches",
+    teas: "Chás",
+  };
 
   useEffect(() => {
     if (router && !user && !isLoading) {
@@ -68,7 +75,7 @@ export default function EditProduct() {
           );
           return [...prev, ...newIngredients];
         });
-        setSelectedCategory({ id: data.category });
+        setSelectedCategory(data.category);
         setProductStatus(data.status || "available");
       })
       .catch((error) => console.error("Error fetching ingredients:", error));
@@ -94,7 +101,7 @@ export default function EditProduct() {
         body: JSON.stringify({
           ingredients_ids: ingredientsIds,
           name: name,
-          category: selectedCategory.id,
+          category: selectedCategory,
           price: price,
           picture: pictureUrl,
           product_status: [productStatus],
@@ -113,10 +120,7 @@ export default function EditProduct() {
   };
 
   const handleCategoryChange = (e) => {
-    const selectedOption = {
-      id: parseInt(e.target.value),
-    };
-    setSelectedCategory(selectedOption);
+    setSelectedCategory(e.target.value);
   };
 
   const handleIngredientChange = (e) => {
@@ -225,15 +229,15 @@ export default function EditProduct() {
           <label>
             Categoria:
             <select
-              value={selectedCategory?.id || ""}
+              value={selectedCategory || ""}
               onChange={handleCategoryChange}
             >
               <option value="" disabled>
                 Selecione a categoria
               </option>
               {categoriesOptions.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.name}
+                <option key={option} value={option}>
+                    {categoryMapping[option]}
                 </option>
               ))}
             </select>
